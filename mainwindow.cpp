@@ -28,6 +28,7 @@ int main(int argc, char *argv[]) {
     // Layout
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(addressBar);
+    layout->addSpacing(10); // Add spacing between address bar and web view
     layout->addWidget(webView);
 
     QWidget *centralWidget = new QWidget(&window);
@@ -35,8 +36,10 @@ int main(int argc, char *argv[]) {
     window.setCentralWidget(centralWidget);
 
     // Load initial URL
-    webView->load(QUrl("http://www.example.com"));
+    webView->load(QUrl("http://www.google.com"));
 
-    window.show();
+    // Make the window fullscreen but windowed
+    window.showMaximized();
+
     return app.exec();
 }
