@@ -1,4 +1,4 @@
-QT += widgets
+QT += webenginewidgets widgets
 
 HEADERS	    =   mainwindow.h
 
