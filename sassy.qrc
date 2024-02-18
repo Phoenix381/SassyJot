@@ -1,0 +1,10 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="">
+    <file alias="/">front-react/build</file>
+
+    <file alias="/static/js/">front-react/build/static/js</file>
+    <file alias="/static/css/">front-react/build/static/css</file>
+    <file alias="/static/media/">front-react/build/static/media</file>
+</qresource>
+</RCC>
+

@@ -4,4 +4,4 @@ HEADERS	    =   mainwindow.h
 
 SOURCES	    =   mainwindow.cpp \
 
-# RESOURCES   =	sassy.qrc
+RESOURCES   =	sassy.qrc

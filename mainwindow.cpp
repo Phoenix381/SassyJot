@@ -4,6 +4,7 @@
 #include <QLineEdit>
 #include <QVBoxLayout>
 #include <QUrl>
+#include <QDir>
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
@@ -35,8 +36,8 @@ int main(int argc, char *argv[]) {
     centralWidget->setLayout(layout);
     window.setCentralWidget(centralWidget);
 
-    // Load initial URL
-    webView->load(QUrl("http://www.google.com"));
+    // Load initial URL (from react frontend)
+    webView->load(QUrl(":/index.html"));
 
     // Make the window fullscreen but windowed
     window.showMaximized();
