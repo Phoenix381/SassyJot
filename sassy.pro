@@ -2,7 +2,9 @@ QT += webenginewidgets widgets
 
 HEADERS	    +=   src/include/mainwindow.h
 
-SOURCES	    +=   src/mainwindow.cpp
+SOURCES	    +=   $$files("src/*.cpp", true)
+# src/mainwindow.cpp
+# $$files("src/*.cpp", true)
 
-RESOURCES   +=	front-react/build/
-# sassy.qrc
+# unix {}
+RESOURCES   +=	sassy.qrc

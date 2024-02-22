@@ -1,12 +1,20 @@
+
 #include <QApplication>
 #include <QMainWindow>
 #include <QWebEngineView>
 #include <QLineEdit>
 #include <QVBoxLayout>
 #include <QUrl>
+
 #include <QDir>
+#include <QDirIterator>
 
 int main(int argc, char *argv[]) {
+    // QDirIterator it(":", QDirIterator::Subdirectories);
+    // while (it.hasNext()) {
+    //     qDebug() << it.next();
+    // }
+
     QApplication app(argc, argv);
 
     QMainWindow window;
@@ -37,7 +45,12 @@ int main(int argc, char *argv[]) {
     window.setCentralWidget(centralWidget);
 
     // Load initial URL (from react frontend)
-    webView->load(QUrl(":/index.html"));
+    webView->load(QUrl("qrc:/index.html"));
+
+    // debug
+    auto dev_view = new QWebEngineView();
+    layout->addWidget(dev_view);
+    webView->page()->setDevToolsPage(dev_view->page());
 
     // Make the window fullscreen but windowed
     window.showMaximized();
