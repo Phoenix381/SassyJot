@@ -9,51 +9,57 @@
 #include <QDir>
 #include <QDirIterator>
 
-int main(int argc, char *argv[]) {
-    // QDirIterator it(":", QDirIterator::Subdirectories);
-    // while (it.hasNext()) {
-    //     qDebug() << it.next();
-    // }
+#include <iostream>
+#include "include/mainwindow.h"
 
-    QApplication app(argc, argv);
+MyWindow::MyWindow() {
+    // Set the window flags to remove the title bar
+    setWindowFlags(Qt::FramelessWindowHint);
 
-    QMainWindow window;
-    window.setWindowTitle("Web Browser");
+    // Set the window's size
+    resize(800, 600);
 
-    // WebView
-    QWebEngineView *webView = new QWebEngineView(&window);
+    // Main layout
+    QVBoxLayout *mainLayout = new QVBoxLayout();
+    mainLayout->setContentsMargins(1, 1, 1, 1);
+    mainLayout->setSpacing(0);
 
-    // Address bar
-    QLineEdit *addressBar = new QLineEdit(&window);
-    addressBar->setPlaceholderText("Enter URL");
-    QObject::connect(addressBar, &QLineEdit::returnPressed, [&]() {
-        QString url = addressBar->text();
-        if (!url.startsWith("http://") && !url.startsWith("https://")) {
-            url.prepend("http://");
-        }
-        webView->load(QUrl(url));
-    });
+    // Controls widget
+    QWebEngineView *webControls = new QWebEngineView();
+    mainLayout->addWidget(webControls);
+    webControls->load(QUrl("qrc:/html/controls.html"));
+    // webControls->setStyleSheet("QWebEngineView { padding: 0px; margin: 0px; }");
+    webControls->setMaximumHeight(110);
 
-    // Layout
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->addWidget(addressBar);
-    layout->addSpacing(10); // Add spacing between address bar and web view
-    layout->addWidget(webView);
+    // Tab widget
+    QTabWidget *tabWidget = new QTabWidget();
+    mainLayout->addWidget(tabWidget);
+    tabWidget->tabBar()->setVisible(false);
 
-    QWidget *centralWidget = new QWidget(&window);
-    centralWidget->setLayout(layout);
-    window.setCentralWidget(centralWidget);
+    // Create initial tab with QWebEngineView
+    createTab(tabWidget);
 
-    // Load initial URL (from react frontend)
-    webView->load(QUrl("qrc:/index.html"));
+    // Connect signals to slots
+    // connect(minimizeButton, &QPushButton::clicked, this, &MyWindow::showMinimized);
+    // connect(maximizeButton, &QPushButton::clicked, this, &MyWindow::toggleMaximizeRestore);
+    // connect(closeButton, &QPushButton::clicked, this, &MyWindow::close);
+    // connect(addressBar, &QLineEdit::returnPressed, this, &MyWindow::loadPage);
+    // connect(backButton, &QPushButton::clicked, this, &MyWindow::goBack);
+    // connect(forwardButton, &QPushButton::clicked, this, &MyWindow::goForward);
+    // connect(reloadButton, &QPushButton::clicked, this, &MyWindow::reloadPage);
+    connect(tabWidget, &QTabWidget::currentChanged, this, &MyWindow::updateAddressBar);
+    connect(tabWidget->tabBar(), &QTabBar::tabCloseRequested, this, &MyWindow::closeTab);
 
-    // debug
-    auto dev_view = new QWebEngineView();
-    layout->addWidget(dev_view);
-    webView->page()->setDevToolsPage(dev_view->page());
+    // Add a context menu to create new tabs
+    setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(this, &MyWindow::customContextMenuRequested, this, &MyWindow::showContextMenu);
 
-    // Make the window fullscreen but windowed
-    window.showMaximized();
+    // Set layout in QWidget
+    QWidget *window = new QWidget();
+    // remove window borders
+    window->setStyleSheet("QWidget { padding: 0px; margin: 0px; }");
+    window->setLayout(mainLayout);
 
-    return app.exec();
+    // Set QWidget as the central layout of the main window
+    this->setCentralWidget(window);
 }

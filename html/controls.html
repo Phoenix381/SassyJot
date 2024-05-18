@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>controls</title>
+
+    <link href="bootstrap.css" rel="stylesheet">
+</head>
+<body>
+    <script src="bootstrap.js"></script>
+
+    <style type="text/css">
+        body {
+            background-color: #000;
+            color: #aaa;
+
+            text-align: center;
+        }
+
+        .bottom-row {
+            border: 1px solid #aaa;
+            background-color: #111;
+
+            min-height: 4vh;
+
+        }
+
+        .top-row, .btn {
+            min-height: 3vh;
+        }
+
+        .btn {
+            color: #aaa;
+
+            vertical-align: middle;
+        }
+
+        .tabs {
+            border: 1px solid #aaa;
+            flex-grow: 1; 
+        }
+
+        .address-bar {
+            border: 1px solid #aaa;
+            flex-grow: 1;
+            height: 100%;
+        }
+
+        .address-bar p {
+            justify-content: center;
+        }
+
+        .app-controls {
+            max-width: fit-content;
+            min-width: fit-content;
+        }
+
+        .controls {
+            max-height: 110px;
+
+        }
+    </style>
+
+    <div class="controls">
+        <div class="top-row d-flex justify-content-between align-items-center">
+            <div class="tabs">
+                <p>tabs</p>
+            </div>
+            <div class="app-controls d-flex justify-content-end" style="width: 10vw;">
+                <input type="button" class="btn" value="_">
+                <input type="button" class="btn" value="O">
+                <input type="button" class="btn" value="X">
+            </div>
+        </div>
+        <div class="bottom-row d-flex justify-content-between align-items-center">    
+            <div class="page-controls">
+                <input type="button" class="btn" value="<">
+                <input type="button" class="btn" value=">">
+                <input type="button" class="btn" value="R">
+            </div>
+            <div class="address-bar">
+                <p>address bar</p>
+            </div>
+            <div class="other-controls">
+                <input type="button" class="btn" value="PLUGINS">
+                <input type="button" class="btn" value="DOWNLOADS">
+                <input type="button" class="btn" value="SETTINGS">
+            </div>
+        </div>
+    </div>
+</body>
+</html

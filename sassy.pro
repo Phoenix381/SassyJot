@@ -2,9 +2,8 @@ QT += webenginewidgets widgets
 
 HEADERS	    +=   src/include/mainwindow.h
 
-SOURCES	    +=   $$files("src/*.cpp", true)
-# src/mainwindow.cpp
-# $$files("src/*.cpp", true)
+SOURCES =       src/mainwindow.cpp \
+		src/main.cpp
 
 # unix {}
 RESOURCES   +=	sassy.qrc
