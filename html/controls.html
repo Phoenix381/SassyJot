@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>controls</title>
 
-    <link href="bootstrap.css" rel="stylesheet">
+    <link href="script/bootstrap.css" rel="stylesheet">
 </head>
 <body>
-    <script src="bootstrap.js"></script>
-    <script src="qwebchannel.js"></script>
+    <script src="script/bootstrap.js"></script>
+    <script src="script/qwebchannel.js"></script>
 
     <style type="text/css">
         body {
@@ -34,10 +34,20 @@
             min-height: 3vh;
         }
 
-        .btn {
-            color: #aaa;
+        .btn-custom {
+            color: #aaa !important;
+            background-color: #111 !important;
+            border-color: #111 !important;
+        }
 
-            vertical-align: middle;
+        .btn-custom:hover {
+            background-color: #666 !important;
+            border-color: #666 !important;
+        }
+
+        .btn-custom img {
+            width: 14px;
+/*            height: 8vh;*/
         }
 
         .tabs {
@@ -62,6 +72,9 @@
         .app-controls {
             max-width: fit-content;
             min-width: fit-content;
+
+/*            gap: 2px;*/
+            display: flex;
         }
 
         .controls {
@@ -78,10 +91,18 @@
             <div class="space">
                 <p>space</p>
             </div>
-            <div class="app-controls d-flex justify-content-end" style="width: 10vw;">
-                <input type="button" class="btn" value="_" id="minimizeButton">
-                <input type="button" class="btn" value="O" id="maximizeButton">
-                <input type="button" class="btn" value="X" id="closeButton">
+            <div class="app-controls mx-1 d-flex justify-content-end" style="width: 40px;">
+                <button class="btn btn-sm rounded-5  btn-custom" id="minimizeButton">
+                    <img src="img/minimize.png" />
+                </button>
+
+                <button class="btn btn-sm rounded-5  btn-custom" id="maximizeButton">
+                    <img src="img/maximize.png" />
+                </button>
+
+                <button class="btn btn-sm rounded-5  btn-custom" id="closeButton">
+                    <img src="img/close.png" />
+                </button>
             </div>
         </div>
         <div class="bottom-row d-flex justify-content-between align-items-center">    

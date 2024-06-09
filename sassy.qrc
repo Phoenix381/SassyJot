@@ -1,6 +1,8 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource prefix="">
-    <file alias="/html">html</file>
+    <file alias="/html/">./html</file>
+    <file alias="/html/img/">./html/img</file>
+    <file alias="/html/script/">./html/script</file>
 </qresource>
 </RCC>
 
