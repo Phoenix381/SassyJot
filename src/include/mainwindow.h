@@ -24,6 +24,9 @@ public:
     MyWindow();
 
 private:
+    QWebEngineView *webControls;
+    QTabWidget *tabWidget;
+
     void createTab(QTabWidget *tabWidget) {
         QWebEngineView *webView = new QWebEngineView();
         webView->setUrl(QUrl("https://www.google.com"));
@@ -33,6 +36,14 @@ private:
 
         // connect(webView, &QWebEngineView::urlChanged, this, &MyWindow::updateAddressBar);
         tabWidget->setTabsClosable(true);
+
+        connect(webView->page(), &QWebEnginePage::titleChanged, this, [this, webView, tabWidget](const QString &title) {
+            int index = tabWidget->indexOf(webView);
+            if (index != -1) {
+                tabWidget->setTabText(index, title);
+                qDebug() << "Updated tab title: " << title;
+            }
+        });
     }
 
 public slots:

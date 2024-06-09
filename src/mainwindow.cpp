@@ -26,20 +26,23 @@ MyWindow::MyWindow() {
     mainLayout->setSpacing(0);
 
     // Controls widget
-    QWebEngineView *webControls = new QWebEngineView();
+    webControls = new QWebEngineView();
     mainLayout->addWidget(webControls);
     webControls->load(QUrl("qrc:/html/controls.html"));
     // webControls->setStyleSheet("QWebEngineView { padding: 0px; margin: 0px; }");
-    webControls->setMaximumHeight(110);
+    webControls->setFixedHeight(86);
+    webControls->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
     // Tab widget
-    QTabWidget *tabWidget = new QTabWidget();
+    tabWidget = new QTabWidget();
     mainLayout->addWidget(tabWidget);
     tabWidget->tabBar()->setVisible(false);
 
     // Create initial tab with QWebEngineView
     createTab(tabWidget);
     
+
+    // setting up web controls for window
     QWebChannel *channel = new QWebChannel(webControls);
     ClickHandler *handler = new ClickHandler();
     channel->registerObject(QStringLiteral("clickHandler"), handler);
