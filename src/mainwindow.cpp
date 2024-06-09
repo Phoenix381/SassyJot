@@ -2,6 +2,7 @@
 #include <QApplication>
 #include <QMainWindow>
 #include <QWebEngineView>
+#include <QWebChannel>
 #include <QLineEdit>
 #include <QVBoxLayout>
 #include <QUrl>
@@ -38,11 +39,17 @@ MyWindow::MyWindow() {
 
     // Create initial tab with QWebEngineView
     createTab(tabWidget);
+    
+    QWebChannel *channel = new QWebChannel(webControls);
+    ClickHandler *handler = new ClickHandler();
+    channel->registerObject(QStringLiteral("clickHandler"), handler);
+    webControls->page()->setWebChannel(channel);
 
-    // Connect signals to slots
-    // connect(minimizeButton, &QPushButton::clicked, this, &MyWindow::showMinimized);
-    // connect(maximizeButton, &QPushButton::clicked, this, &MyWindow::toggleMaximizeRestore);
-    // connect(closeButton, &QPushButton::clicked, this, &MyWindow::close);
+    // connecting web controls to qt
+    connect(handler, &ClickHandler::closeRequested, this, &MyWindow::closeWindow);
+    connect(handler, &ClickHandler::maximizeRequested, this, &MyWindow::toggleMaximizeRestore);
+    connect(handler, &ClickHandler::minimizeRequested, this, &MyWindow::minimizeWindow);
+
     // connect(addressBar, &QLineEdit::returnPressed, this, &MyWindow::loadPage);
     // connect(backButton, &QPushButton::clicked, this, &MyWindow::goBack);
     // connect(forwardButton, &QPushButton::clicked, this, &MyWindow::goForward);

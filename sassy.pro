@@ -1,4 +1,4 @@
-QT += webenginewidgets widgets
+QT += webenginewidgets webchannel widgets
 
 HEADERS	    +=   src/include/mainwindow.h
 

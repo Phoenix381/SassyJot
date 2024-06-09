@@ -35,7 +35,15 @@ private:
         tabWidget->setTabsClosable(true);
     }
 
-private slots:
+public slots:
+    void closeWindow() {
+        close();   
+    }
+
+    void minimizeWindow() {
+        showMinimized();
+    }
+
     void toggleMaximizeRestore() {
         if (isMaximized()) {
             showNormal();
@@ -44,6 +52,7 @@ private slots:
         }
     }
 
+private slots:
     void loadPage() {
         QLineEdit *addressBar = findChild<QLineEdit *>();
         QTabWidget *tabWidget = findChild<QTabWidget *>();
@@ -116,6 +125,32 @@ private slots:
         if (tabWidget) {
             createTab(tabWidget);
         }
+    }
+};
+
+class ClickHandler : public QObject {
+    Q_OBJECT
+
+signals:
+    void closeRequested();
+    void maximizeRequested();
+    void minimizeRequested();
+
+public slots:
+    void handleClick() {
+        qDebug() << "Click event received!";
+    }
+
+    void requestClose() {
+        emit closeRequested();
+    }
+
+    void requestMaximize() {
+        emit maximizeRequested();
+    }
+
+    void requestMinimize() {
+        emit minimizeRequested();
     }
 };
 
