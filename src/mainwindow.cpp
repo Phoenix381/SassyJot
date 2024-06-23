@@ -22,7 +22,7 @@ MyWindow::MyWindow() {
 
     // Main layout
     QVBoxLayout *mainLayout = new QVBoxLayout();
-    mainLayout->setContentsMargins(1, 1, 1, 1);
+    mainLayout->setContentsMargins(1, 0, 1, 0);
     mainLayout->setSpacing(0);
 
     // Controls widget
@@ -30,7 +30,7 @@ MyWindow::MyWindow() {
     mainLayout->addWidget(webControls);
     webControls->load(QUrl("qrc:/html/controls.html"));
     // webControls->setStyleSheet("QWebEngineView { padding: 0px; margin: 0px; }");
-    webControls->setFixedHeight(86);
+    webControls->setFixedHeight(83);
     webControls->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
     // Tab widget

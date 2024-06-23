@@ -13,7 +13,7 @@
 
     <style type="text/css">
         body {
-            background-color: #000;
+            background-color: #111;
             color: #aaa;
 
             text-align: center;
@@ -23,50 +23,60 @@
         }
 
         .bottom-row {
-            border: 1px solid #aaa;
-            background-color: #111;
+            border: 1px solid #888;
+            background-color: #222;
+            border-radius: 5px 5px 0 0;
+            border-left-style: none;
+            border-right-style: none;
 
             min-height: 4vh;
-
         }
 
         .top-row, .btn {
             min-height: 3vh;
         }
 
-        .btn-custom {
+        .btn-custom-top {
             color: #aaa !important;
             background-color: #111 !important;
             border-color: #111 !important;
         }
 
-        .btn-custom:hover {
+        .btn-custom-top:hover {
             background-color: #666 !important;
             border-color: #666 !important;
         }
 
-        .btn-custom img {
+        .btn-custom-top img {
             width: 14px;
-/*            height: 8vh;*/
+            filter: brightness(0.6)contrast(3.4)hue-rotate(180deg)saturate(5);
         }
 
+
+        .btn-custom-bottom {
+            color: #aaa !important;
+            background-color: #222 !important;
+            border-color: #222 !important;
+        }
+
+        .btn-custom-bottom:hover {
+            background-color: #666 !important;
+            border-color: #666 !important;
+        }
+
+        .btn-custom-bottom img {
+            width: 16px;
+            filter: brightness(0.6)contrast(3.4)hue-rotate(180deg)saturate(5);
+        }
+
+
         .tabs {
-            border: 1px solid #aaa;
+            border: 1px solid #666;
             flex-grow: 1; 
         }
 
         .space {
-            border: 1px solid #aaa;
-        }
-
-        .address-bar {
-            border: 1px solid #aaa;
-            flex-grow: 1;
-            height: 100%;
-        }
-
-        .address-bar p {
-            justify-content: center;
+            border: 1px solid #666;
         }
 
         .app-controls {
@@ -79,7 +89,38 @@
 
         .controls {
             max-height: 110px;
+        }
 
+
+        #address-bar {
+            flex-grow: 1;
+            height: 100%;
+        }
+
+        #address-bar p {
+            justify-content: center;
+        }
+
+        #address-input {
+            width: 100%;
+
+            background-color: #222;
+            color: #baa;
+
+            border: none;
+            padding: 2px;
+            padding-left: 6px;
+        }
+
+        #address-input:focus {
+            background-color: #333;
+            color: #baa;
+
+            outline: none;
+            border: 2px solid #baa !important;
+            border-radius: 10px;
+            padding: 2px;
+            padding-left: 4px;
         }
     </style>
 
@@ -91,38 +132,67 @@
             <div class="space">
                 <p>space</p>
             </div>
-            <div class="app-controls mx-1 d-flex justify-content-end" style="width: 40px;">
-                <button class="btn btn-sm rounded-5  btn-custom" id="minimizeButton">
-                    <img src="img/minimize.png" />
+            <div class="app-controls mx-1 d-flex justify-content-end pe-1" style="width: 40px;">
+                <button class="btn btn-sm rounded-5 btn-custom-top" id="minimizeButton">
+                    <img src="img/minimize.png" style="transform: scale(1.2);" />
                 </button>
 
-                <button class="btn btn-sm rounded-5  btn-custom" id="maximizeButton">
-                    <img src="img/maximize.png" />
+                <button class="btn btn-sm rounded-5 btn-custom-top ms-1 me-1" id="maximizeButton">
+                    <img src="img/maximize.png" style="transform: scale(0.9);" />
                 </button>
 
-                <button class="btn btn-sm rounded-5  btn-custom" id="closeButton">
-                    <img src="img/close.png" />
+                <button class="btn btn-sm rounded-5 btn-custom-top" id="closeButton">
+                    <img src="img/close.png" style="transform: scale(1.3);" />
                 </button>
             </div>
         </div>
-        <div class="bottom-row d-flex justify-content-between align-items-center">    
+        <div class="bottom-row d-flex justify-content-between align-items-center ps-1 py-1">    
             <div class="page-controls">
-                <input type="button" class="btn" value="<">
-                <input type="button" class="btn" value=">">
-                <input type="button" class="btn" value="R">
+                <button class="btn btn-sm rounded-5 btn-custom-bottom" id="backButton">
+                    <img src="img/arrow_back.png" style="transform: scale(1.4);" />
+                </button>
+
+                <button class="btn btn-sm rounded-5 btn-custom-bottom" id="forwardButton">
+                    <img src="img/arrow_forward.png" style="transform: scale(1.4);" />
+                </button>
+
+                <button class="btn btn-sm rounded-5 btn-custom-bottom" id="refreshButton">
+                    <img src="img/refresh.png" style="transform: scale(1.4);" />
+                </button>
             </div>
-            <div class="address-bar">
-                <p>address bar</p>
+            <div id="address-bar" class="ps-2">
+                <input type="text" id="address-input">
             </div>
-            <div class="other-controls">
-                <input type="button" class="btn" value="PLUGINS">
-                <input type="button" class="btn" value="DOWNLOADS">
-                <input type="button" class="btn" value="SETTINGS">
+            <div class="other-controls pe-2">
+                <button class="btn btn-sm rounded-5 btn-custom-bottom" id="extensionButton">
+                    <img src="img/extension.png" style="transform: scale(1.4);" />
+                </button>
+
+                <button class="btn btn-sm rounded-5 btn-custom-bottom" id="downloadButton">
+                    <img src="img/download.png" style="transform: scale(1.4);" />
+                </button>
+
+                <button class="btn btn-sm rounded-5 btn-custom-bottom" id="menuButton">
+                    <img src="img/menu.png" style="transform: scale(1.4);" />
+                </button>
             </div>
         </div>
     </div>
 
     <script>
+        // element selection actions
+        addressInput = document.getElementById('address-input');
+        addressBar = document.getElementById('address-bar');
+
+        // addressInput.addEventListener('focus', function() {
+        //     addressBar.style.border = '1px solid #00a0ff';
+        // });
+        // addressInput.addEventListener('blur', function() {
+        //     addressBar.style.border = '1px solid #aaa';
+        // });
+
+
+        // qb webchannel
         new QWebChannel(qt.webChannelTransport, function(channel) {
             var handler = channel.objects.clickHandler;
 
