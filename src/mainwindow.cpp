@@ -30,7 +30,7 @@ MyWindow::MyWindow() {
     mainLayout->addWidget(webControls);
     webControls->load(QUrl("qrc:/html/controls.html"));
     // webControls->setStyleSheet("QWebEngineView { padding: 0px; margin: 0px; }");
-    webControls->setFixedHeight(83);
+    webControls->setFixedHeight(84);
     webControls->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
     // Tab widget
