@@ -13,7 +13,7 @@
 #include <iostream>
 #include "include/mainwindow.h"
 
-MyWindow::MyWindow() {
+AppWindow::AppWindow() {
     // Set the window flags to remove the title bar
     setWindowFlags(Qt::FramelessWindowHint);
 
@@ -49,22 +49,22 @@ MyWindow::MyWindow() {
     webControls->page()->setWebChannel(channel);
 
     // connecting js web controls to qt
-    connect(handler, &ClickHandler::closeRequested, this, &MyWindow::closeWindow);
-    connect(handler, &ClickHandler::maximizeRequested, this, &MyWindow::toggleMaximizeRestore);
-    connect(handler, &ClickHandler::minimizeRequested, this, &MyWindow::minimizeWindow);
+    connect(handler, &ClickHandler::closeRequested, this, &AppWindow::closeWindow);
+    connect(handler, &ClickHandler::maximizeRequested, this, &AppWindow::toggleMaximizeRestore);
+    connect(handler, &ClickHandler::minimizeRequested, this, &AppWindow::minimizeWindow);
 
-    connect(handler, &ClickHandler::startMoveEvent, this, &MyWindow::startMoveEvent);
+    connect(handler, &ClickHandler::startMoveEvent, this, &AppWindow::startMoveEvent);
 
-    // connect(addressBar, &QLineEdit::returnPressed, this, &MyWindow::loadPage);
-    // connect(backButton, &QPushButton::clicked, this, &MyWindow::goBack);
-    // connect(forwardButton, &QPushButton::clicked, this, &MyWindow::goForward);
-    // connect(reloadButton, &QPushButton::clicked, this, &MyWindow::reloadPage);
-    connect(tabWidget, &QTabWidget::currentChanged, this, &MyWindow::updateAddressBar);
-    connect(tabWidget->tabBar(), &QTabBar::tabCloseRequested, this, &MyWindow::closeTab);
+    // connect(addressBar, &QLineEdit::returnPressed, this, &AppWindow::loadPage);
+    // connect(backButton, &QPushButton::clicked, this, &AppWindow::goBack);
+    // connect(forwardButton, &QPushButton::clicked, this, &AppWindow::goForward);
+    // connect(reloadButton, &QPushButton::clicked, this, &AppWindow::reloadPage);
+    connect(tabWidget, &QTabWidget::currentChanged, this, &AppWindow::updateAddressBar);
+    connect(tabWidget->tabBar(), &QTabBar::tabCloseRequested, this, &AppWindow::closeTab);
 
     // Add a context menu to create new tabs
     setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(this, &MyWindow::customContextMenuRequested, this, &MyWindow::showContextMenu);
+    connect(this, &AppWindow::customContextMenuRequested, this, &AppWindow::showContextMenu);
 
     // Set layout in QWidget
     QWidget *window = new QWidget();

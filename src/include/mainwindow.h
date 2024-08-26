@@ -1,10 +1,12 @@
 #ifndef MYWINDOW_H
 #define MYWINDOW_H
 
-#include <QWidget>
-#include <QMainWindow>
 #include <QtGui>
 
+#include <QWidget>
+#include <QMainWindow>
+
+#include <QScreen>
 #include <QApplication>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -18,17 +20,19 @@
 #include <QTabBar>
 #include <QMenu>
 
-class MyWindow : public QMainWindow {
+class AppWindow : public QMainWindow {
     Q_OBJECT
 public:
-    MyWindow();
+    AppWindow();
 
 private:
     QWebEngineView *webControls;
     QTabWidget *tabWidget;
 
     bool dragging = false;
+    bool maximized = false;
     QPoint localPos;
+    QSize lastSize;
 
     void createTab(QTabWidget *tabWidget) {
         QWebEngineView *webView = new QWebEngineView();
@@ -37,7 +41,7 @@ private:
         int index = tabWidget->addTab(webView, "New Tab");
         tabWidget->setCurrentIndex(index);
 
-        // connect(webView, &QWebEngineView::urlChanged, this, &MyWindow::updateAddressBar);
+        // connect(webView, &QWebEngineView::urlChanged, this, &AppWindow::updateAddressBar);
         tabWidget->setTabsClosable(true);
 
         connect(webView->page(), &QWebEnginePage::titleChanged, this, [this, webView, tabWidget](const QString &title) {
@@ -52,7 +56,25 @@ private:
 protected:
     void mouseMoveEvent(QMouseEvent *event) override {
         if (dragging) {   
-            window()->move(event->globalPosition().toPoint().x() - localPos.x(), event->globalPosition().toPoint().y() - localPos.y());
+            QPoint globalPos = event->globalPosition().toPoint();
+            window()->move(globalPos.x() - localPos.x(), globalPos.y() - localPos.y());
+
+            // Find the screen where the cursor is located
+            QScreen *screen = QGuiApplication::screenAt(globalPos);
+            if (screen) {
+                QRect screenGeometry = screen->geometry();
+
+                if (!this->isMaximized() && globalPos.y() <= screenGeometry.top()) {
+                    maximized = true;
+                    this->showMaximized(); 
+                } else if (globalPos.y() > screenGeometry.top()) {
+                    if(maximized) {
+                        maximized = false;
+                        this->showNormal();
+                        this->resize(lastSize);
+                    }
+                }
+            }
         }
     }
 
@@ -90,6 +112,7 @@ public slots:
         this->grabMouse();
 
         localPos = this->mapFromGlobal(QCursor::pos());
+        lastSize = this->size();
     }
 
 private slots:
@@ -155,7 +178,7 @@ private slots:
     void showContextMenu(const QPoint &pos) {
         QMenu contextMenu;
         QAction *newTabAction = contextMenu.addAction("New Tab");
-        connect(newTabAction, &QAction::triggered, this, &MyWindow::createNewTab);
+        connect(newTabAction, &QAction::triggered, this, &AppWindow::createNewTab);
 
         contextMenu.exec(mapToGlobal(pos));
     }
