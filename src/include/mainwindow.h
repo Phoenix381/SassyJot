@@ -27,6 +27,9 @@ private:
     QWebEngineView *webControls;
     QTabWidget *tabWidget;
 
+    bool dragging = false;
+    QPoint localPos;
+
     void createTab(QTabWidget *tabWidget) {
         QWebEngineView *webView = new QWebEngineView();
         webView->setUrl(QUrl("https://www.google.com"));
@@ -46,6 +49,20 @@ private:
         });
     }
 
+protected:
+    void mouseMoveEvent(QMouseEvent *event) override {
+        if (dragging) {   
+            window()->move(event->globalPosition().toPoint().x() - localPos.x(), event->globalPosition().toPoint().y() - localPos.y());
+        }
+    }
+
+    void mouseReleaseEvent(QMouseEvent *event) override {
+        if (dragging && event->button() == Qt::LeftButton) {
+            dragging = false;
+            this->releaseMouse();
+        }
+    }
+
 public slots:
     void closeWindow() {
         close();   
@@ -61,6 +78,18 @@ public slots:
         } else {
             showMaximized();
         }
+    }
+
+    void createTabEvent() {
+        
+    }
+
+    // catching move event from js
+    void startMoveEvent(int x, int y) {
+        dragging = true;
+        this->grabMouse();
+
+        localPos = this->mapFromGlobal(QCursor::pos());
     }
 
 private slots:
@@ -139,6 +168,8 @@ private slots:
     }
 };
 
+
+// handling js events
 class ClickHandler : public QObject {
     Q_OBJECT
 
@@ -147,6 +178,7 @@ signals:
     void maximizeRequested();
     void minimizeRequested();
 
+    void startMoveEvent(int x, int y);
 public slots:
     void handleClick() {
         qDebug() << "Click event received!";
@@ -162,6 +194,15 @@ public slots:
 
     void requestMinimize() {
         emit minimizeRequested();
+    }
+
+    void requestNewTab() {
+        
+    }
+
+    void startMove(int x, int y) {
+        // qInfo() << "startMove: " << x << ", " << y;
+        emit startMoveEvent(x, y);
     }
 };
 

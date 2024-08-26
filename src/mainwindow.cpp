@@ -48,10 +48,12 @@ MyWindow::MyWindow() {
     channel->registerObject(QStringLiteral("clickHandler"), handler);
     webControls->page()->setWebChannel(channel);
 
-    // connecting web controls to qt
+    // connecting js web controls to qt
     connect(handler, &ClickHandler::closeRequested, this, &MyWindow::closeWindow);
     connect(handler, &ClickHandler::maximizeRequested, this, &MyWindow::toggleMaximizeRestore);
     connect(handler, &ClickHandler::minimizeRequested, this, &MyWindow::minimizeWindow);
+
+    connect(handler, &ClickHandler::startMoveEvent, this, &MyWindow::startMoveEvent);
 
     // connect(addressBar, &QLineEdit::returnPressed, this, &MyWindow::loadPage);
     // connect(backButton, &QPushButton::clicked, this, &MyWindow::goBack);

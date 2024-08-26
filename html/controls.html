@@ -87,7 +87,7 @@
             background-color: #222;
         }
 
-        .space {
+        #space {
             border: 1px solid #666;
             flex-grow: 1; 
         }
@@ -148,7 +148,7 @@
                     <img src="img/add.png" style="transform: scale(1.3);" />
                 </button>
             </div>
-            <div class="space">
+            <div id="space">
                 <p>space</p>
             </div>
             <div class="app-controls mx-1 d-flex justify-content-end pe-1" style="width: 40px;">
@@ -225,7 +225,17 @@
 
             document.getElementById('minimizeButton').addEventListener('click', function() {
                 handler.requestMinimize();
-            })
+            });
+
+            document.getElementById('newTabButton').addEventListener('click', function() {
+                handler.requestNewTab();
+            });
+
+            const drag = document.getElementById('space');
+
+            drag.addEventListener('mousedown', function() {
+                handler.startMove(event.clientX, event.clientY);
+            });
         });
     </script>
 </body>
