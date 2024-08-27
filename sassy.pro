@@ -7,3 +7,5 @@ SOURCES =       src/mainwindow.cpp \
 
 # unix {}
 RESOURCES   +=	sassy.qrc
+
+CONFIG += c++20

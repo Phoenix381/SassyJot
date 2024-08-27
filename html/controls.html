@@ -72,19 +72,28 @@
 
         .tabs {
             border: 1px solid #666;
-            display: flex;
 
-            align-items: center;
+
+            max-width: 70%;
         }
 
         .tab {
-
+            min-width: fit-content;
+            padding-left: 5px;
+            padding-right: 5px;
+/*            min-width: 100px;*/
+/*            height: 100%;*/
+/*            align-items: center;*/
         }
 
-        .tab .selected {
+        .selected {
             border: 1px solid #666;
             border-radius: 5px;
-            background-color: #222;
+            background-color: #555 !important;
+        }
+
+        #tab-list {
+            min-height: 100%;
         }
 
         #space {
@@ -139,9 +148,13 @@
 
     <div class="controls">
         <div class="top-row d-flex justify-content-between align-items-center">
-            <div class="tabs">
-                <div class="tabs-container">
+            <div class="tabs d-flex flex-row">
+                <!-- <div class="tabs-container">
                     tabs
+                </div> -->
+
+                <div id="tab-list" class="d-flex my-0">
+                    <!-- tabs here -->
                 </div>
 
                 <button class="btn btn-sm rounded-5 btn-custom-top" id="newTabButton">
@@ -203,6 +216,8 @@
         addressInput = document.getElementById('address-input');
         addressBar = document.getElementById('address-bar');
 
+        newTabElement = document.getElementById('newTabButton')
+
         // addressInput.addEventListener('focus', function() {
         //     addressBar.style.border = '1px solid #00a0ff';
         // });
@@ -210,8 +225,15 @@
         //     addressBar.style.border = '1px solid #aaa';
         // });
 
+        // tab
+        tabListElement = document.getElementById('tab-list');
+        tabList = [];
 
-        // qb webchannel
+        function updateTabTitle(index, title) {
+            tabList[index].innerHTML = title;
+        }
+
+        // qt webchannel
         new QWebChannel(qt.webChannelTransport, function(channel) {
             var handler = channel.objects.clickHandler;
 
@@ -229,12 +251,36 @@
 
             document.getElementById('newTabButton').addEventListener('click', function() {
                 handler.requestNewTab();
+
+                tab = document.createElement('div');
+                // tab.innerHTML = 'tab';
+                tab.classList.add('tab');
+                tab.classList.add('d-flex');
+                tab.classList.add('align-items-center');
+                tabListElement.appendChild(tab);
+
+                let index = tabList.length;
+                tabList.push(tab);
+
+                tab.addEventListener('click', function() {
+                    tabList.forEach(function(el) {
+                        el.classList.remove('selected'); 
+                    });
+                    tabList[index].classList.add('selected'); 
+
+                    handler.requestChangeTab(index);
+
+                    // console.log(index);
+                });
+
+                tab.click();
             });
 
-            const drag = document.getElementById('space');
+            // drag window
+            const dragElement = document.getElementById('space');
 
-            drag.addEventListener('mousedown', function() {
-                handler.startMove(event.clientX, event.clientY);
+            dragElement.addEventListener('mousedown', function() {
+                handler.startMove();
             });
         });
     </script>

@@ -12,16 +12,13 @@
 #include "include/mainwindow.h"
 
 int main(int argc, char *argv[]) {
-// QDirIterator it(":", QDirIterator::Subdirectories);
-// while (it.hasNext()) {
-//     qDebug() << it.next();
-// }
-//     webView->load(QUrl("qrc:/index.html"));
+    // check resources
+    // QDirIterator it(":", QDirIterator::Subdirectories);
+    // while (it.hasNext()) {
+    //     qDebug() << it.next();
+    // }
+    //     webView->load(QUrl("qrc:/index.html"));
 
-//     // debug
-//     auto dev_view = new QWebEngineView();
-//     layout->addWidget(dev_view);
-//     webView->page()->setDevToolsPage(dev_view->page());
 
     QApplication app(argc, argv);
 

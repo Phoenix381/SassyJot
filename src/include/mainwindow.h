@@ -20,40 +20,37 @@
 #include <QTabBar>
 #include <QMenu>
 
+#include <vector>
+#include <format>
+
 class AppWindow : public QMainWindow {
     Q_OBJECT
 public:
     AppWindow();
 
 private:
+    // window controls
     QWebEngineView *webControls;
+    // main page
     QTabWidget *tabWidget;
 
+    // tabs
+    std::vector<QWebEngineView *> tabs;
+    int currentTab = 0;
+
+    // dragging window
     bool dragging = false;
     bool maximized = false;
     QPoint localPos;
     QSize lastSize;
 
-    void createTab(QTabWidget *tabWidget) {
-        QWebEngineView *webView = new QWebEngineView();
-        webView->setUrl(QUrl("https://www.google.com"));
-
-        int index = tabWidget->addTab(webView, "New Tab");
-        tabWidget->setCurrentIndex(index);
-
-        // connect(webView, &QWebEngineView::urlChanged, this, &AppWindow::updateAddressBar);
-        tabWidget->setTabsClosable(true);
-
-        connect(webView->page(), &QWebEnginePage::titleChanged, this, [this, webView, tabWidget](const QString &title) {
-            int index = tabWidget->indexOf(webView);
-            if (index != -1) {
-                tabWidget->setTabText(index, title);
-                qDebug() << "Updated tab title: " << title;
-            }
-        });
-    }
+    // creating new tab
+    // void createTab() {
+        
+    // }
 
 protected:
+    // handling dragging window
     void mouseMoveEvent(QMouseEvent *event) override {
         if (dragging) {   
             QPoint globalPos = event->globalPosition().toPoint();
@@ -78,6 +75,7 @@ protected:
         }
     }
 
+    // handling lmb release
     void mouseReleaseEvent(QMouseEvent *event) override {
         if (dragging && event->button() == Qt::LeftButton) {
             dragging = false;
@@ -102,12 +100,36 @@ public slots:
         }
     }
 
-    void createTabEvent() {
-        
+    void createTab() {
+        QWebEngineView *webView = new QWebEngineView();
+        webView->setUrl(QUrl("https://www.google.com"));
+
+        int index = tabWidget->addTab(webView, "New Tab");
+        tabWidget->setCurrentIndex(index);
+
+        // connect(webView, &QWebEngineView::urlChanged, this, &AppWindow::updateAddressBar);
+        tabWidget->setTabsClosable(true);
+
+        connect(webView->page(), &QWebEnginePage::titleChanged, this, [this, webView](const QString &title) {
+            int index = tabWidget->indexOf(webView);
+            if (index != -1) {
+                tabWidget->setTabText(index, title);
+
+                webControls->page()->runJavaScript(std::format(
+                    "updateTabTitle({0},'{1}');", index, title.toStdString()
+                ).c_str());
+
+                // qDebug() << "Updated tab title: " << title;
+            }
+        });
+    }
+
+    void changeTab(int index) {
+        tabWidget->setCurrentIndex(index);
     }
 
     // catching move event from js
-    void startMoveEvent(int x, int y) {
+    void startMoveEvent() {
         dragging = true;
         this->grabMouse();
 
@@ -184,10 +206,11 @@ private slots:
     }
 
     void createNewTab() {
-        QTabWidget *tabWidget = findChild<QTabWidget *>();
-        if (tabWidget) {
-            createTab(tabWidget);
-        }
+        // QTabWidget *tabWidget = findChild<QTabWidget *>();
+        // if (tabWidget) {
+        //     createTab();
+        // }
+        // createTab();
     }
 };
 
@@ -201,7 +224,10 @@ signals:
     void maximizeRequested();
     void minimizeRequested();
 
-    void startMoveEvent(int x, int y);
+    void createTabEvent();
+    void tabChangeEvent(int index);
+
+    void startMoveEvent();
 public slots:
     void handleClick() {
         qDebug() << "Click event received!";
@@ -220,12 +246,15 @@ public slots:
     }
 
     void requestNewTab() {
-        
+        emit createTabEvent();
     }
 
-    void startMove(int x, int y) {
-        // qInfo() << "startMove: " << x << ", " << y;
-        emit startMoveEvent(x, y);
+    void requestChangeTab(int index) {
+        emit tabChangeEvent(index);
+    }
+
+    void startMove() {
+        emit startMoveEvent();
     }
 };
 

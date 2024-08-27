@@ -38,9 +38,10 @@ AppWindow::AppWindow() {
     mainLayout->addWidget(tabWidget);
     tabWidget->tabBar()->setVisible(false);
 
-    // Create initial tab with QWebEngineView
-    createTab(tabWidget);
-    
+    // Developer tools
+    // auto dev_view = new QWebEngineView();
+    // mainLayout->addWidget(dev_view);
+    // webControls->page()->setDevToolsPage(dev_view->page());
 
     // setting up web controls for window
     QWebChannel *channel = new QWebChannel(webControls);
@@ -54,6 +55,9 @@ AppWindow::AppWindow() {
     connect(handler, &ClickHandler::minimizeRequested, this, &AppWindow::minimizeWindow);
 
     connect(handler, &ClickHandler::startMoveEvent, this, &AppWindow::startMoveEvent);
+
+    connect(handler, &ClickHandler::createTabEvent, this, &AppWindow::createTab);
+    connect(handler, &ClickHandler::tabChangeEvent, this, &AppWindow::changeTab);
 
     // connect(addressBar, &QLineEdit::returnPressed, this, &AppWindow::loadPage);
     // connect(backButton, &QPushButton::clicked, this, &AppWindow::goBack);
@@ -74,4 +78,11 @@ AppWindow::AppWindow() {
 
     // Set QWidget as the central layout of the main window
     this->setCentralWidget(window);
+
+    // Create initial tab with QWebEngineView
+    connect(webControls, &QWebEngineView::loadFinished, this, 
+        [this](){this->webControls->page()->runJavaScript("newTabElement.click();");}
+    );
+    // webControls->page()->runJavaScript("newTabElement.click();");
+    // createTab();
 }
