@@ -23,11 +23,13 @@
         }
 
         .bottom-row {
-            border: 1px solid #888;
-            background-color: #222;
+            border: 1px solid #444;
+            background-color: #333;
             border-radius: 5px 5px 0 0;
-            border-left-style: none;
-            border-right-style: none;
+/*            border-left-style: none;*/
+/*            border-right-style: none;*/
+
+            border-top-color: #333;
 
             min-height: 4vh;
         }
@@ -55,8 +57,8 @@
 
         .btn-custom-bottom {
             color: #aaa !important;
-            background-color: #222 !important;
-            border-color: #222 !important;
+            background-color: #333 !important;
+            border-color: #333 !important;
         }
 
         .btn-custom-bottom:hover {
@@ -71,9 +73,9 @@
 
 
         .tabs {
-            border: 1px solid #666;
-
-
+/*            border: 1px solid #666;*/
+            padding-left: 5px;
+/*            background-color: #333;*/
             max-width: 70%;
         }
 
@@ -84,20 +86,35 @@
 /*            min-width: 100px;*/
 /*            height: 100%;*/
 /*            align-items: center;*/
+            background-color: #111;
+
+            border-bottom: 1px solid #666 !important;
         }
 
         .selected {
             border: 1px solid #666;
-            border-radius: 5px;
-            background-color: #555 !important;
+/*            border-radius: 5px;*/
+
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            border-bottom-color: #333 !important;
+            background-color: #333 !important;
+
+            z-index: 3;
         }
 
         #tab-list {
             min-height: 100%;
         }
 
+        .addTabContainer {
+            border-bottom: 1px solid #666 !important;
+            height: 100%;
+            background-color: #111;
+        }
+
         #space {
-            border: 1px solid #666;
+            border-bottom: 1px solid #666;
             flex-grow: 1; 
         }
 
@@ -107,6 +124,8 @@
 
 /*            gap: 2px;*/
             display: flex;
+
+            border-bottom: 1px solid #666;
         }
 
         .controls {
@@ -126,16 +145,16 @@
         #address-input {
             width: 100%;
 
-            background-color: #222;
+            background-color: #333;
             color: #baa;
 
-            border: 2px solid #222 !important;
+            border: 2px solid #333 !important;
             padding: 2px;
             padding-left: 6px;
         }
 
         #address-input:focus {
-            background-color: #333;
+            background-color: #111;
             color: #baa;
 
             outline: none;
@@ -144,11 +163,23 @@
             padding: 2px;
             padding-left: 4px;
         }
+
+        /* styling tabs */
+        #tab-list .tab:has(+ .selected) {            
+            border-bottom-right-radius: 8px;
+            box-shadow: 20px 10px 0px -10px rgba(88, 88, 88, 1);
+        }
+
+        #tab-list .selected + *{
+            border-bottom-left-radius: 8px;
+            box-shadow: -20px 10px 0px -10px rgba(88, 88, 88, 1);
+        }
+
     </style>
 
     <div class="controls">
-        <div class="top-row d-flex justify-content-between align-items-center">
-            <div class="tabs d-flex flex-row">
+        <div class="top-row d-flex justify-content-between mx-1">
+            <div class="tabs d-flex flex-row align-items-center">
                 <!-- <div class="tabs-container">
                     tabs
                 </div> -->
@@ -157,14 +188,16 @@
                     <!-- tabs here -->
                 </div>
 
-                <button class="btn btn-sm rounded-5 btn-custom-top" id="newTabButton">
-                    <img src="img/add.png" style="transform: scale(1.3);" />
-                </button>
+                <div class="addTabContainer d-flex">
+                    <button class="btn btn-sm rounded-5 btn-custom-top" id="newTabButton">
+                        <img src="img/add.png" style="transform: scale(1.3);" />
+                    </button>
+                </div>
             </div>
             <div id="space">
                 <p>space</p>
             </div>
-            <div class="app-controls mx-1 d-flex justify-content-end pe-1" style="width: 40px;">
+            <div class="app-controls px-1 d-flex justify-content-end" style="width: 40px;">
                 <button class="btn btn-sm rounded-5 btn-custom-top" id="minimizeButton">
                     <img src="img/minimize.png" style="transform: scale(1.2);" />
                 </button>

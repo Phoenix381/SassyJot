@@ -1,5 +1,5 @@
-#ifndef MYWINDOW_H
-#define MYWINDOW_H
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
 
 #include <QtGui>
 
@@ -258,4 +258,4 @@ public slots:
     }
 };
 
-#endif // MYWINDOW_H
+#endif // MAINWINDOW_H
