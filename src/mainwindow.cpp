@@ -58,13 +58,14 @@ AppWindow::AppWindow() {
 
     connect(handler, &ClickHandler::createTabEvent, this, &AppWindow::createTab);
     connect(handler, &ClickHandler::tabChangeEvent, this, &AppWindow::changeTab);
+    connect(handler, &ClickHandler::tabCloseEvent, this, &AppWindow::closeTab);
 
     // connect(addressBar, &QLineEdit::returnPressed, this, &AppWindow::loadPage);
     // connect(backButton, &QPushButton::clicked, this, &AppWindow::goBack);
     // connect(forwardButton, &QPushButton::clicked, this, &AppWindow::goForward);
     // connect(reloadButton, &QPushButton::clicked, this, &AppWindow::reloadPage);
-    connect(tabWidget, &QTabWidget::currentChanged, this, &AppWindow::updateAddressBar);
-    connect(tabWidget->tabBar(), &QTabBar::tabCloseRequested, this, &AppWindow::closeTab);
+    // connect(tabWidget, &QTabWidget::currentChanged, this, &AppWindow::updateAddressBar);
+    // connect(tabWidget->tabBar(), &QTabBar::tabCloseRequested, this, &AppWindow::closeTab);
 
     // Add a context menu to create new tabs
     setContextMenuPolicy(Qt::CustomContextMenu);

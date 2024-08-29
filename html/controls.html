@@ -87,8 +87,14 @@
 /*            height: 100%;*/
 /*            align-items: center;*/
             background-color: #111;
+            color: #aaa;
 
             border-bottom: 1px solid #666 !important;
+        }
+
+        .tab:not(.selected):hover {
+            background-color: #333;
+            border-radius: 10px;
         }
 
         .selected {
@@ -99,6 +105,8 @@
             border-top-right-radius: 15px;
             border-bottom-color: #333 !important;
             background-color: #333 !important;
+
+            color: #baa !important;
 
             z-index: 3;
         }
@@ -294,7 +302,7 @@
                 tab.classList.add('tab');
                 tab.classList.add('d-flex');
                 tab.classList.add('align-items-center');
-                tab.classList.add('py-1');
+                tab.classList.add('py-2');
                 tab.classList.add('px-2');
 
                 icon = document.createElement('img');
@@ -324,6 +332,18 @@
                     handler.requestChangeTab(index);
 
                     // console.log(index);
+                });
+
+                tab.addEventListener('auxclick', function() {
+                    tab = tabList[index];
+                    tabList.splice(index, 1);
+
+                    tab.remove();
+
+                    newIndex = index ? index - 1 : 0;
+                    tabList[newIndex].classList.add('selected'); 
+
+                    handler.requestCloseTab(index, newIndex);
                 });
 
                 tab.click();

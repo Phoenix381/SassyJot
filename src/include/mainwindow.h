@@ -146,6 +146,11 @@ public slots:
         tabWidget->setCurrentIndex(index);
     }
 
+    void closeTab(int index, int newIndex) {
+        tabWidget->removeTab(index);
+        tabWidget->setCurrentIndex(newIndex);
+    }
+
     // catching move event from js
     void startMoveEvent() {
         dragging = true;
@@ -167,16 +172,16 @@ private slots:
         }
     }
 
-    void updateAddressBar(int index) {
-        QLineEdit *addressBar = findChild<QLineEdit *>();
-        QTabWidget *tabWidget = findChild<QTabWidget *>();
-        if (addressBar && tabWidget) {
-            QWebEngineView *webView = qobject_cast<QWebEngineView *>(tabWidget->widget(index));
-            if (webView) {
-                addressBar->setText(webView->url().toString());
-            }
-        }
-    }
+    // void updateAddressBar(int index) {
+    //     QLineEdit *addressBar = findChild<QLineEdit *>();
+    //     QTabWidget *tabWidget = findChild<QTabWidget *>();
+    //     if (addressBar && tabWidget) {
+    //         QWebEngineView *webView = qobject_cast<QWebEngineView *>(tabWidget->widget(index));
+    //         if (webView) {
+    //             addressBar->setText(webView->url().toString());
+    //         }
+    //     }
+    // }
 
     void goBack() {
         QTabWidget *tabWidget = findChild<QTabWidget *>();
@@ -208,12 +213,12 @@ private slots:
         }
     }
 
-    void closeTab(int index) {
-        QTabWidget *tabWidget = findChild<QTabWidget *>();
-        if (tabWidget && tabWidget->count() > 1) {
-            tabWidget->removeTab(index);
-        }
-    }
+    // void closeTab(int index) {
+    //     QTabWidget *tabWidget = findChild<QTabWidget *>();
+    //     if (tabWidget && tabWidget->count() > 1) {
+    //         tabWidget->removeTab(index);
+    //     }
+    // }
 
     void showContextMenu(const QPoint &pos) {
         QMenu contextMenu;
@@ -244,6 +249,7 @@ signals:
 
     void createTabEvent();
     void tabChangeEvent(int index);
+    void tabCloseEvent(int index, int newIndex);
 
     void startMoveEvent();
 public slots:
@@ -269,6 +275,10 @@ public slots:
 
     void requestChangeTab(int index) {
         emit tabChangeEvent(index);
+    }
+
+    void requestCloseTab(int index, int newIndex) {
+        emit tabCloseEvent(index, newIndex);
     }
 
     void startMove() {
