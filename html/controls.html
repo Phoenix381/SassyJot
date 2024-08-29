@@ -76,7 +76,7 @@
 /*            border: 1px solid #666;*/
             padding-left: 5px;
 /*            background-color: #333;*/
-            max-width: 70%;
+            max-width: 77%;
         }
 
         .tab {
@@ -195,7 +195,7 @@
                 </div>
             </div>
             <div id="space">
-                <p>space</p>
+                    <!-- <p>space</p> -->
             </div>
             <div class="app-controls px-1 d-flex justify-content-end" style="width: 40px;">
                 <button class="btn btn-sm rounded-5 btn-custom-top" id="minimizeButton">
@@ -263,7 +263,11 @@
         tabList = [];
 
         function updateTabTitle(index, title) {
-            tabList[index].innerHTML = title;
+            tabList[index].children[1].innerHTML = title;
+        }
+
+        function updateTabIcon(index, icon) {
+            tabList[index].children[0].src = "data:image/png;base64," + icon;
         }
 
         // qt webchannel
@@ -290,6 +294,22 @@
                 tab.classList.add('tab');
                 tab.classList.add('d-flex');
                 tab.classList.add('align-items-center');
+                tab.classList.add('py-1');
+                tab.classList.add('px-2');
+
+                icon = document.createElement('img');
+                icon.src = '';
+                icon.classList.add('me-1');
+                // icon.style.transform = 'scale(1.4)';
+                tab.appendChild(icon);
+
+                text = document.createElement('div');
+                text.classList.add('d-flex');
+                text.classList.add('align-items-center');
+                text.innerHTML = 'tab';
+                tab.appendChild(text);
+
+                // adding to tab list
                 tabListElement.appendChild(tab);
 
                 let index = tabList.length;

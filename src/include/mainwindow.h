@@ -113,13 +113,31 @@ public slots:
         connect(webView->page(), &QWebEnginePage::titleChanged, this, [this, webView](const QString &title) {
             int index = tabWidget->indexOf(webView);
             if (index != -1) {
-                tabWidget->setTabText(index, title);
+                // tabWidget->setTabText(index, title);
 
                 webControls->page()->runJavaScript(std::format(
                     "updateTabTitle({0},'{1}');", index, title.toStdString()
                 ).c_str());
 
                 // qDebug() << "Updated tab title: " << title;
+            }
+        });
+
+        connect(webView->page(), &QWebEnginePage::iconChanged, this, [this, webView](const QIcon &icon) {
+            int index = tabWidget->indexOf(webView);
+            if (index != -1) {
+                // tabWidget->setTabIcon(index, icon);
+                auto pixmap = icon.pixmap(16, 16);
+                QByteArray pixels;
+                QBuffer buffer(&pixels);
+                buffer.open(QIODevice::WriteOnly);
+                pixmap.save(&buffer, "PNG");
+
+                webControls->page()->runJavaScript(std::format(
+                    "updateTabIcon({0},'{1}');", index, pixels.toBase64().toStdString()
+                ).c_str());
+
+                // qInfo() << std::format("Updated tab icon: {}", pixels.toBase64().toStdString());
             }
         });
     }
