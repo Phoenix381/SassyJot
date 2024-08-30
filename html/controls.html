@@ -257,7 +257,8 @@
         addressInput = document.getElementById('address-input');
         addressBar = document.getElementById('address-bar');
 
-        newTabElement = document.getElementById('newTabButton')
+        newTabElement = document.getElementById('newTabButton');
+        addressInputElement = document.getElementById('address-input');
 
         // addressInput.addEventListener('focus', function() {
         //     addressBar.style.border = '1px solid #00a0ff';
@@ -276,6 +277,10 @@
 
         function updateTabIcon(index, icon) {
             tabList[index].children[0].src = "data:image/png;base64," + icon;
+        }
+
+        function updateTabURL(url) {
+            addressInputElement.value = url;
         }
 
         // qt webchannel

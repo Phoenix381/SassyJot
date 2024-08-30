@@ -140,10 +140,26 @@ public slots:
                 // qInfo() << std::format("Updated tab icon: {}", pixels.toBase64().toStdString());
             }
         });
+
+        connect( webView->page(), &QWebEnginePage::urlChanged, this, [this, webView](const QUrl &url) {
+            int index = tabWidget->indexOf(webView);
+            int currentIndex = tabWidget->currentIndex();
+            if (index == currentIndex)
+                webControls->page()->runJavaScript(std::format(
+                    "updateTabURL('{0}');", url.toString().toStdString()
+                ).c_str());
+        });
+            
+        
     }
 
     void changeTab(int index) {
         tabWidget->setCurrentIndex(index);
+        QWebEngineView *webView = qobject_cast<QWebEngineView *>(tabWidget->currentWidget());
+
+        webControls->page()->runJavaScript(std::format(
+                    "updateTabURL('{0}');", webView->url().toString().toStdString()
+                ).c_str());
     }
 
     void closeTab(int index, int newIndex) {
