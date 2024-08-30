@@ -294,6 +294,18 @@
                 handler.requestMinimize();
             });
 
+            document.getElementById('backButton').addEventListener('click', function() {
+                handler.requestBack();
+            });
+
+            document.getElementById('forwardButton').addEventListener('click', function() {
+                handler.requestForward();
+            });
+
+            document.getElementById('refreshButton').addEventListener('click', function() {
+                handler.requestReload();
+            });
+
             document.getElementById('newTabButton').addEventListener('click', function() {
                 handler.requestNewTab();
 
@@ -335,6 +347,10 @@
                 });
 
                 tab.addEventListener('auxclick', function() {
+                    if(tabList.length == 1) {
+                        return;
+                    }
+
                     tab = tabList[index];
                     tabList.splice(index, 1);
 

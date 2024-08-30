@@ -160,6 +160,26 @@ public slots:
         lastSize = this->size();
     }
 
+    void goBack() {
+        QWebEngineView *webView = qobject_cast<QWebEngineView *>(tabWidget->currentWidget());
+        if (webView) {
+            webView->back();
+        }
+    }
+
+    void goForward() {
+        QWebEngineView *webView = qobject_cast<QWebEngineView *>(tabWidget->currentWidget());
+        if (webView) {
+            webView->forward();
+        }
+    }
+
+    void reload() {
+        QWebEngineView *webView = qobject_cast<QWebEngineView *>(tabWidget->currentWidget());
+        if (webView) {
+            webView->reload();
+        }
+    }
 private slots:
     void loadPage() {
         QLineEdit *addressBar = findChild<QLineEdit *>();
@@ -183,25 +203,6 @@ private slots:
     //     }
     // }
 
-    void goBack() {
-        QTabWidget *tabWidget = findChild<QTabWidget *>();
-        if (tabWidget) {
-            QWebEngineView *webView = qobject_cast<QWebEngineView *>(tabWidget->currentWidget());
-            if (webView) {
-                webView->back();
-            }
-        }
-    }
-
-    void goForward() {
-        QTabWidget *tabWidget = findChild<QTabWidget *>();
-        if (tabWidget) {
-            QWebEngineView *webView = qobject_cast<QWebEngineView *>(tabWidget->currentWidget());
-            if (webView) {
-                webView->forward();
-            }
-        }
-    }
 
     void reloadPage() {
         QTabWidget *tabWidget = findChild<QTabWidget *>();
@@ -243,20 +244,28 @@ class ClickHandler : public QObject {
     Q_OBJECT
 
 signals:
+    // window
     void closeRequested();
     void maximizeRequested();
     void minimizeRequested();
 
+    // navigation
+    void backRequested();
+    void forwardRequested();
+    void reloadRequested();
+
+    // tabs
     void createTabEvent();
     void tabChangeEvent(int index);
     void tabCloseEvent(int index, int newIndex);
 
     void startMoveEvent();
 public slots:
-    void handleClick() {
-        qDebug() << "Click event received!";
-    }
+    // void handleClick() {
+    //     qDebug() << "Click event received!";
+    // }
 
+    // window
     void requestClose() {
         emit closeRequested();
     }
@@ -269,6 +278,20 @@ public slots:
         emit minimizeRequested();
     }
 
+    // navigation
+    void requestBack() {
+        emit backRequested();   
+    }
+
+    void requestForward() {
+        emit forwardRequested();   
+    }
+
+    void requestReload() {
+        emit reloadRequested();
+    }
+
+    // tabs
     void requestNewTab() {
         emit createTabEvent();
     }

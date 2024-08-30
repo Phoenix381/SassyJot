@@ -61,8 +61,9 @@ AppWindow::AppWindow() {
     connect(handler, &ClickHandler::tabCloseEvent, this, &AppWindow::closeTab);
 
     // connect(addressBar, &QLineEdit::returnPressed, this, &AppWindow::loadPage);
-    // connect(backButton, &QPushButton::clicked, this, &AppWindow::goBack);
-    // connect(forwardButton, &QPushButton::clicked, this, &AppWindow::goForward);
+    connect(handler, &ClickHandler::backRequested, this, &AppWindow::goBack);
+    connect(handler, &ClickHandler::forwardRequested, this, &AppWindow::goForward);
+    connect(handler, &ClickHandler::reloadRequested, this, &AppWindow::reload);
     // connect(reloadButton, &QPushButton::clicked, this, &AppWindow::reloadPage);
     // connect(tabWidget, &QTabWidget::currentChanged, this, &AppWindow::updateAddressBar);
     // connect(tabWidget->tabBar(), &QTabBar::tabCloseRequested, this, &AppWindow::closeTab);
