@@ -7,6 +7,8 @@
 #include <QVBoxLayout>
 #include <QUrl>
 
+#include <QShortcut>
+
 #include <QDir>
 #include <QDirIterator>
 
@@ -67,6 +69,15 @@ AppWindow::AppWindow() {
     // connect(reloadButton, &QPushButton::clicked, this, &AppWindow::reloadPage);
     // connect(tabWidget, &QTabWidget::currentChanged, this, &AppWindow::updateAddressBar);
     // connect(tabWidget->tabBar(), &QTabBar::tabCloseRequested, this, &AppWindow::closeTab);
+
+    // setting up shortcuts
+    // new QShortcut(QKeySequence("Ctrl+T"), this, &AppWindow::createTab);
+    connect(new QShortcut(QKeySequence("Ctrl+T"), this), &QShortcut::activated, this, &AppWindow::requestNewTab);
+    // new QShortcut(QKeySequence("Ctrl+R"), this, &AppWindow::reload);
+    // new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_W), this, &AppWindow::closeTab);
+    connect(new QShortcut(QKeySequence("Ctrl+W"), this), &QShortcut::activated, this, &AppWindow::closeCurrentTab);
+    // new QShortcut(QKeySequence(Qt::CTRL + Qt::Tab), this, &AppWindow::changeTab);
+
 
     // Add a context menu to create new tabs
     setContextMenuPolicy(Qt::CustomContextMenu);

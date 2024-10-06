@@ -148,9 +148,11 @@ public slots:
                 webControls->page()->runJavaScript(std::format(
                     "updateTabURL('{0}');", url.toString().toStdString()
                 ).c_str());
-        });
-            
-        
+        });   
+    }
+
+    void requestNewTab() {
+        webControls->page()->runJavaScript("newTab();");
     }
 
     void changeTab(int index) {
@@ -165,6 +167,13 @@ public slots:
     void closeTab(int index, int newIndex) {
         tabWidget->removeTab(index);
         tabWidget->setCurrentIndex(newIndex);
+    }
+
+    void closeCurrentTab() {
+        // int currentIndex = tabWidget->currentIndex();
+        // tabWidget->removeTab(currentIndex);
+        // tabWidget->setCurrentIndex(0);
+        webControls->page()->runJavaScript("closeCurrentTab();");
     }
 
     // catching move event from js
