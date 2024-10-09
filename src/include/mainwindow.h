@@ -102,7 +102,7 @@ public slots:
 
     void createTab() {
         QWebEngineView *webView = new QWebEngineView();
-        webView->setUrl(QUrl("https://www.google.com"));
+        webView->load(QUrl("qrc:/html/dashboard.html"));
 
         int index = tabWidget->addTab(webView, "New Tab");
         tabWidget->setCurrentIndex(index);

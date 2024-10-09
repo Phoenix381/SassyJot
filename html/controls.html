@@ -378,7 +378,10 @@
         }
 
         function updateTabURL(url) {
-            addressInputElement.value = url;
+            if(url.startsWith("qrc:"))
+                addressInputElement.value = '';
+            else
+                addressInputElement.value = url;
         }
 
         function nextTab() {
