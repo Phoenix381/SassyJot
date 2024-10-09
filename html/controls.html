@@ -201,6 +201,51 @@
         .modal-content {
             background-color: #111;   
         }
+
+        #fav-modal {
+            gap: 1em;
+        }
+
+        #fav-dialog {
+            display: flex;
+            align-items: center;
+            max-width: 400px;
+
+            gap: 10px;
+        }
+
+        #fav-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5em;
+        }
+
+        #fav-controls button {
+            width: 100%;
+        }
+
+        #fav-remove {
+            
+        }
+
+        #fav-remove-button {
+            display: none;
+        }
+
+        #fav-address {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+
+        }
+
+        #fav-address div input {
+            width: 100%;
+        }
+
+        #fav-name {
+            min-width: 20em;
+        }
     </style>
 
     <div class="controls">
@@ -279,18 +324,23 @@
         <div class="modal fade" id="favModal" tabindex="-1" aria-labelledby="favModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-fullscreen">
                 <div class="modal-content d-flex align-items-center justify-content-center">
-                    <div class="pt-2 pb-1 d-flex flex-row justify-content-between align-items-center w-25">
-                        <div class="px-2"><img id="favIcon"/></div>
-                        <div>
-                            <input class="text-input text-bordered" type="text" id="favName">
-                            <!-- <input type="text" id="address-input"> -->
+                    <div id="fav-dialog" class="pt-2 pb-1 justify-center">
+                        <div id="fav-address">
+                            <div class="px-2"><img id="favIcon"/></div>
+                            <div>
+                                <input class="text-input text-bordered" type="text" id="fav-name">
+                                <!-- <input type="text" id="address-input"> -->
+                            </div>
                         </div>
-                        <div class="d-flex">
-                            <button class="btn btn-sm btn-custom-bottom" id="favAddButton">
+                        <div id="fav-controls">
+                            <button class="btn btn-sm btn-custom-bottom" id="fav-add-button">
                                 Add
                             </button>
-                            <button class="btn btn-sm btn-custom-bottom mx-3" id="favRemoveButton">
+                            <button class="btn btn-sm btn-custom-bottom" id="fav-remove-button">
                                 Remove
+                            </button>
+                            <button class="btn btn-sm btn-custom-bottom" id="fav-cancel-button" data-bs-dismiss="modal">
+                                Cancel
                             </button>
                         </div>
                     </div>
@@ -323,7 +373,8 @@
         }
 
         function updateTabIcon(index, icon) {
-            tabList[index].children[0].src = "data:image/png;base64," + icon;
+            if(icon)
+                tabList[index].children[0].src = "data:image/png;base64," + icon;
         }
 
         function updateTabURL(url) {
