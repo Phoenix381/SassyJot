@@ -71,11 +71,11 @@ AppWindow::AppWindow() {
     // connect(tabWidget->tabBar(), &QTabBar::tabCloseRequested, this, &AppWindow::closeTab);
 
     // setting up shortcuts
-    // new QShortcut(QKeySequence("Ctrl+T"), this, &AppWindow::createTab);
     connect(new QShortcut(QKeySequence("Ctrl+T"), this), &QShortcut::activated, this, &AppWindow::requestNewTab);
-    // new QShortcut(QKeySequence("Ctrl+R"), this, &AppWindow::reload);
-    // new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_W), this, &AppWindow::closeTab);
     connect(new QShortcut(QKeySequence("Ctrl+W"), this), &QShortcut::activated, this, &AppWindow::closeCurrentTab);
+    connect(new QShortcut(QKeySequence("Ctrl+Tab"), this), &QShortcut::activated, this, &AppWindow::nextTab);
+    connect(new QShortcut(QKeySequence("Ctrl+Shift+Tab"), this), &QShortcut::activated, this, &AppWindow::prevTab);
+    // new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_W), this, &AppWindow::closeTab);
     // new QShortcut(QKeySequence(Qt::CTRL + Qt::Tab), this, &AppWindow::changeTab);
 
 

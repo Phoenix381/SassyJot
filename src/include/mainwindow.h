@@ -170,10 +170,29 @@ public slots:
     }
 
     void closeCurrentTab() {
-        // int currentIndex = tabWidget->currentIndex();
-        // tabWidget->removeTab(currentIndex);
-        // tabWidget->setCurrentIndex(0);
         webControls->page()->runJavaScript("closeCurrentTab();");
+    }
+
+    void nextTab() {
+        auto currentIndex = tabWidget->currentIndex();
+
+        if (currentIndex + 1 < tabWidget->count())
+            tabWidget->setCurrentIndex(currentIndex + 1);
+        else
+            tabWidget->setCurrentIndex(0);
+
+        webControls->page()->runJavaScript("nextTab();");
+    }
+
+    void prevTab() {
+        auto currentIndex = tabWidget->currentIndex();
+
+        if (currentIndex - 1 >= 0)
+            tabWidget->setCurrentIndex(currentIndex - 1);
+        else
+            tabWidget->setCurrentIndex(tabWidget->count() - 1);
+
+        webControls->page()->runJavaScript("prevTab();");
     }
 
     // catching move event from js

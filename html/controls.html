@@ -92,6 +92,12 @@
             border-bottom: 1px solid #666 !important;
         }
 
+        .tab div {
+            max-width: 6em;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
         .tab:not(.selected):hover {
             background-color: #333;
             border-top-left-radius: 10px;
@@ -324,6 +330,35 @@
             addressInputElement.value = url;
         }
 
+        function nextTab() {
+            let currentTab = tabList.findIndex(function(el) {
+                return el.classList.contains('selected');
+            });
+
+            tabList[currentTab].classList.remove('selected');
+            
+            if(currentTab < tabList.length - 1) {
+                tabList[currentTab + 1].classList.add('selected');
+            } else {
+                tabList[0].classList.add('selected');
+            }
+        }
+
+        function prevTab() {
+            let currentTab = tabList.findIndex(function(el) {
+                return el.classList.contains('selected');
+            });
+
+            tabList[currentTab].classList.remove('selected');
+            
+            if(currentTab > 0) {
+                tabList[currentTab - 1].classList.add('selected');
+            } else {
+                tabList[tabList.length - 1].classList.add('selected');
+            }
+        }
+
+
         function newTab() {
             new QWebChannel(qt.webChannelTransport, function(channel) {
                 var handler = channel.objects.clickHandler;
@@ -393,12 +428,6 @@
 
         function closeCurrentTab() {
             let tab = document.getElementsByClassName('selected')[0];
-            // tab.auxclick();
-
-            // var middleClick = new MouseEvent( "click", { "button": 1, "which": 2 });
-            // jQuery(".selected")[0].dispatchEvent( middleClick );
-            // tab.style.opacity = 0;
-            // tab.click("auxclick");
             tab.dispatchEvent(new Event("auxclick"));
         }
 
