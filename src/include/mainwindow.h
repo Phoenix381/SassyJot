@@ -195,6 +195,10 @@ public slots:
         webControls->page()->runJavaScript("prevTab();");
     }
 
+    void favDialog() {
+        webControls->page()->runJavaScript("favDialog();");
+    }
+
     // catching move event from js
     void startMoveEvent() {
         dragging = true;

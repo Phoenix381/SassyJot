@@ -75,8 +75,7 @@ AppWindow::AppWindow() {
     connect(new QShortcut(QKeySequence("Ctrl+W"), this), &QShortcut::activated, this, &AppWindow::closeCurrentTab);
     connect(new QShortcut(QKeySequence("Ctrl+Tab"), this), &QShortcut::activated, this, &AppWindow::nextTab);
     connect(new QShortcut(QKeySequence("Ctrl+Shift+Tab"), this), &QShortcut::activated, this, &AppWindow::prevTab);
-    // new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_W), this, &AppWindow::closeTab);
-    // new QShortcut(QKeySequence(Qt::CTRL + Qt::Tab), this, &AppWindow::changeTab);
+    connect(new QShortcut(QKeySequence("Ctrl+D"), this), &QShortcut::activated, this, &AppWindow::favDialog);
 
 
     // Add a context menu to create new tabs

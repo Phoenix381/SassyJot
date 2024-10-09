@@ -409,6 +409,11 @@
             }
         }
 
+        function favDialog() {
+            // let modal = document.getElementById('favModal');
+            let modal = new bootstrap.Modal(document.getElementById('favModal'));
+            modal.show();
+        }
 
         function newTab() {
             new QWebChannel(qt.webChannelTransport, function(channel) {
@@ -521,7 +526,7 @@
         // fav modal
         let favModalElement = document.getElementById('favModal');
         let iconElement = document.getElementById('favIcon');
-        let textElement = document.getElementById('favName');
+        let textElement = document.getElementById('fav-name');
 
         favModalElement.addEventListener('show.bs.modal', function(event) {
              let tabElement = document.getElementsByClassName('selected')[0];
