@@ -228,6 +228,17 @@ public slots:
             webView->reload();
         }
     }
+
+    void changeUrl(QString url) {
+        QWebEngineView *webView = qobject_cast<QWebEngineView *>(tabWidget->currentWidget());   
+        if (webView) {
+            // TODO validate url properly
+            if (!url.startsWith("http://") && !url.startsWith("https://"))
+                url.prepend("http://");
+
+            webView->setUrl(QUrl(url));
+        }
+    }
 private slots:
     void loadPage() {
         QLineEdit *addressBar = findChild<QLineEdit *>();
@@ -301,6 +312,7 @@ signals:
     void backRequested();
     void forwardRequested();
     void reloadRequested();
+    void urlChangeRequested(QString url);
 
     // tabs
     void createTabEvent();
@@ -337,6 +349,10 @@ public slots:
 
     void requestReload() {
         emit reloadRequested();
+    }
+
+    void requestUrlChange(QString url) {
+        emit urlChangeRequested(url);
     }
 
     // tabs

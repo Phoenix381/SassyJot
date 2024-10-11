@@ -297,7 +297,9 @@
                 </button>
             </div>
             <div id="address-bar" class="ps-2">
-                <input class="text-input wide" type="text" id="address-input">
+                <form id="adress-form">
+                    <input class="text-input wide" type="text" id="address-input">
+                </form>
             </div>
             <div class="other-controls pe-2">
                 <button class="btn btn-sm rounded-5 btn-custom-bottom" id="favButton"
@@ -356,6 +358,7 @@
 
         newTabElement = document.getElementById('newTabButton');
         addressInputElement = document.getElementById('address-input');
+        addressFormElement = document.getElementById('adress-form');
 
         // addressInput.addEventListener('focus', function() {
         //     addressBar.style.border = '1px solid #00a0ff';
@@ -417,6 +420,17 @@
             let modal = new bootstrap.Modal(document.getElementById('favModal'));
             modal.show();
         }
+
+        addressFormElement.addEventListener('submit', function(event) {
+            event.preventDefault();
+            new QWebChannel(qt.webChannelTransport, function(channel) {
+                var handler = channel.objects.clickHandler;
+                handler.requestUrlChange(addressInputElement.value);
+
+                addressInputElement.blur();
+            });
+        });
+
 
         function newTab() {
             new QWebChannel(qt.webChannelTransport, function(channel) {
