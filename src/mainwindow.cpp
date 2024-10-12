@@ -24,7 +24,7 @@ AppWindow::AppWindow() {
 
     // Main layout
     QVBoxLayout *mainLayout = new QVBoxLayout();
-    mainLayout->setContentsMargins(1, 0, 1, 0);
+    mainLayout->setContentsMargins(0,0,0,0);
     mainLayout->setSpacing(0);
 
     // Controls widget

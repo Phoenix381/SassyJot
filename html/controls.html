@@ -96,6 +96,7 @@
             max-width: 6em;
             overflow: hidden;
             white-space: nowrap;
+            text-align: end;
         }
 
         .tab:not(.selected):hover {
@@ -439,23 +440,25 @@
                 handler.requestNewTab();
 
                 tab = document.createElement('div');
-                // tab.innerHTML = 'tab';
+
                 tab.classList.add('tab');
                 tab.classList.add('d-flex');
                 tab.classList.add('align-items-center');
-                tab.classList.add('py-2');
+                tab.classList.add('pt-1');
+                tab.classList.add('pb-2');
                 tab.classList.add('px-2');
 
                 icon = document.createElement('img');
-                icon.src = '';
+                icon.src = 'img/globe_small.png';
+                // icon.width = 16;
                 icon.classList.add('me-1');
                 // icon.style.transform = 'scale(1.4)';
-                tab.appendChild(icon);
 
                 text = document.createElement('div');
-                text.classList.add('d-flex');
-                text.classList.add('align-items-center');
+                text.classList.add('pt-1');
                 text.innerHTML = 'tab';
+
+                tab.appendChild(icon);
                 tab.appendChild(text);
 
                 // adding to tab list
@@ -546,10 +549,10 @@
         let textElement = document.getElementById('fav-name');
 
         favModalElement.addEventListener('show.bs.modal', function(event) {
-             let tabElement = document.getElementsByClassName('selected')[0];
+            let tabElement = document.getElementsByClassName('selected')[0];
 
-             iconElement.src = tabElement.children[0].src;
-             textElement.value = tabElement.children[1].innerHTML;
+            iconElement.src = tabElement.children[0].src;
+            textElement.value = tabElement.children[1].innerHTML;
         });
     </script>
 </body>
