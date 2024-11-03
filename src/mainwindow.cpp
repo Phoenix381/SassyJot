@@ -16,6 +16,9 @@
 #include "include/mainwindow.h"
 
 AppWindow::AppWindow() {
+    // db api
+    // auto db = DBController();
+    
     // Set the window flags to remove the title bar
     setWindowFlags(Qt::FramelessWindowHint);
 
