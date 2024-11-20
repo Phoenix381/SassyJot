@@ -17,7 +17,7 @@
 
 AppWindow::AppWindow() {
     // db api
-    // auto db = DBController();
+    db = new DBController();
     
     // Set the window flags to remove the title bar
     setWindowFlags(Qt::FramelessWindowHint);
@@ -80,7 +80,12 @@ AppWindow::AppWindow() {
     connect(new QShortcut(QKeySequence("Ctrl+Tab"), this), &QShortcut::activated, this, &AppWindow::nextTab);
     connect(new QShortcut(QKeySequence("Ctrl+Shift+Tab"), this), &QShortcut::activated, this, &AppWindow::prevTab);
     connect(new QShortcut(QKeySequence("Ctrl+D"), this), &QShortcut::activated, this, &AppWindow::favDialog);
+    connect(new QShortcut(QKeySequence("Esc"), this), &QShortcut::activated, this, &AppWindow::focus);
 
+    // setting up db api
+    connect(handler, &ClickHandler::removeBookmarkEvent, this, &AppWindow::removeBookmark);
+    connect(handler, &ClickHandler::addBookmarkEvent, db, &DBController::addBookmark);
+    connect(handler, &ClickHandler::checkBookmarkEvent, this, &AppWindow::checkBookmark);
 
     // Add a context menu to create new tabs
     setContextMenuPolicy(Qt::CustomContextMenu);

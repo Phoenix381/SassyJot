@@ -66,11 +66,18 @@
             border-color: #666 !important;
         }
 
-        .btn-custom-bottom img {
+        .btn-custom-bottom img:not(.fav-icon) {
             width: 16px;
             filter: brightness(0.6)contrast(3.4)hue-rotate(180deg)saturate(5);
         }
 
+        .fav-icon {
+            width: 16px;
+        }
+
+        .shaded-img {
+            filter: brightness(0.6)contrast(3.4)hue-rotate(180deg)saturate(5);
+        }
 
         .tabs {
 /*            border: 1px solid #666;*/
@@ -262,10 +269,6 @@
             
         }
 
-        #fav-remove-button {
-            display: none;
-        }
-
         #fav-address {
             display: flex;
             gap: 5px;
@@ -339,7 +342,7 @@
                 <button class="btn btn-sm rounded-5 btn-custom-bottom" id="favButton"
                     data-bs-toggle="modal" data-bs-target="#favModal"
                 >
-                    <img src="img/fav.png" style="transform: scale(1.4);" />
+                    <img src="img/fav.png" style="transform: scale(1.4);" class='fav-icon shaded-img' />
                 </button>
 
                 <button class="btn btn-sm rounded-5 btn-custom-bottom" id="extensionButton">
@@ -369,9 +372,6 @@
                             </div>
                         </div>
                         <div id="fav-controls">
-                            <button class="btn btn-sm btn-custom-bottom" id="fav-add-button">
-                                Add
-                            </button>
                             <button class="btn btn-sm btn-custom-bottom" id="fav-remove-button">
                                 Remove
                             </button>
@@ -449,10 +449,37 @@
             }
         }
 
+
+        let favRemoveButton = document.getElementById('fav-remove-button');
+        let modal = new bootstrap.Modal(document.getElementById('favModal'));
+        let favButton = document.getElementById('favButton');
+
+        function gotFocus() {
+            // check if modal is open
+            // alert('got focus');
+            if(modal._element.classList.contains('show')) {
+                modal.hide();
+            } else {
+                addressInputElement.focus();
+            }
+        }
+
+        function setFavIcon(state) {
+            if(state) {
+                favButton.children[0].classList.remove('shaded-img');
+                // favButton.children[0].filter = 'none';
+                favButton.children[0].src = 'img/faved.png';
+            } else {
+                favButton.children[0].classList.add('shaded-img');
+                // favButton.children[0].filter = 'brightness(0.6)contrast(3.4)hue-rotate(180deg)saturate(5)';
+                favButton.children[0].src = 'img/fav.png';
+            }
+        }
+
         function favDialog() {
-            // let modal = document.getElementById('favModal');
-            let modal = new bootstrap.Modal(document.getElementById('favModal'));
             modal.show();
+            // modal.focus();
+            setFavIcon(true);
         }
 
         addressFormElement.addEventListener('submit', function(event) {
@@ -509,6 +536,9 @@
                     handler.requestChangeTab(index);
 
                     // console.log(index);
+
+                    // check if faved
+                    handler.checkBookmark();
                 });
 
                 tab.addEventListener('auxclick', function() {
@@ -566,6 +596,15 @@
 
             document.getElementById('refreshButton').addEventListener('click', function() {
                 handler.requestReload();
+            });
+
+            favRemoveButton.addEventListener('click', function() {
+                let tabElement = document.getElementsByClassName('selected')[0];
+                // let url = tabElement.children[1].innerHTML;
+                handler.removeBookmark();
+                handler.checkBookmark();
+
+                modal.hide();
             });
 
             // drag window

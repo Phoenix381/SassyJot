@@ -22,8 +22,9 @@
 
 #include <vector>
 #include <format>
+#include <iostream>
 
-// #include "db_api.h"
+#include "db_api.h"
 
 class AppWindow : public QMainWindow {
     Q_OBJECT
@@ -45,6 +46,8 @@ private:
     bool maximized = false;
     QPoint localPos;
     QSize lastSize;
+
+    DBController *db;
 
     // creating new tab
     // void createTab() {
@@ -150,6 +153,11 @@ public slots:
                 webControls->page()->runJavaScript(std::format(
                     "updateTabURL('{0}');", url.toString().toStdString()
                 ).c_str());
+            // check if faved
+            if (db->checkBookmark(url.toString()))
+                webControls->page()->runJavaScript("setFavIcon(true);");
+            else
+                webControls->page()->runJavaScript("setFavIcon(false);");
         });   
     }
 
@@ -184,6 +192,15 @@ public slots:
             tabWidget->setCurrentIndex(0);
 
         webControls->page()->runJavaScript("nextTab();");
+
+        // update address bar
+        auto url = qobject_cast<QWebEngineView *>(tabWidget->currentWidget())->url();
+        webControls->page()->runJavaScript(std::format(
+            "updateTabURL('{0}');", url.toString().toStdString()
+        ).c_str());
+
+        // check if faved
+        this->checkBookmark();
     }
 
     void prevTab() {
@@ -195,10 +212,71 @@ public slots:
             tabWidget->setCurrentIndex(tabWidget->count() - 1);
 
         webControls->page()->runJavaScript("prevTab();");
+
+        // update address bar
+        auto url = qobject_cast<QWebEngineView *>(tabWidget->currentWidget())->url();
+        webControls->page()->runJavaScript(std::format(
+            "updateTabURL('{0}');", url.toString().toStdString()
+        ).c_str());
+
+        // check if faved
+        this->checkBookmark();
     }
 
     void favDialog() {
+        // check if url is already bookmarked
+        auto url = qobject_cast<QWebEngineView *>(tabWidget->currentWidget())->url().toString();
+        if(! db->checkBookmark(url)) {
+            // save bookmark (QString url, QString title, QIcon icon) to (string url, string title, string icon)
+            auto currentIndex = tabWidget->currentIndex();
+            auto title = qobject_cast<QWebEngineView *>(tabWidget->currentWidget())->title();
+            auto icon = qobject_cast<QWebEngineView *>(tabWidget->currentWidget())->page()->icon();
+
+            auto pixmap = icon.pixmap(16, 16);
+            QByteArray pixels;
+            QBuffer buffer(&pixels);
+            buffer.open(QIODevice::WriteOnly);
+            pixmap.save(&buffer, "PNG");
+
+            // qDebug() << "Added bookmark: " << url << ", " << title << ", " << pixels.toBase64().toStdString();
+
+            // Bookmark bookmark(0, url, title, pixels.toBase64().toStdString());
+            db->addBookmark(url, pixels.toBase64(), title);
+        } // else {
+        //     qDebug() << "Bookmark already exists: " << url;
+        // }
+
+        webControls->setFocus();
         webControls->page()->runJavaScript("favDialog();");
+    }
+
+    void focus() {
+        if(! webControls->hasFocus()) {
+            // qDebug() << "Got focus";
+            webControls->setFocus();
+            // pass esc to webview
+        }
+        webControls->page()->runJavaScript("gotFocus();");
+    }
+
+    void removeBookmark() {
+        // remove bookmark (QString url)
+        auto url = qobject_cast<QWebEngineView *>(tabWidget->currentWidget())->url().toString();
+        db->removeBookmark(url);
+        // webControls->page()->runJavaScript("removeBookmark();");
+    }
+
+    void checkBookmark() {
+        auto url = qobject_cast<QWebEngineView *>(tabWidget->currentWidget())->url().toString();
+
+        if (db->checkBookmark(url)) {
+            webControls->page()->runJavaScript("setFavIcon(true);");
+            qDebug() << "Found bookmark: " << url;
+        } 
+        else {
+            webControls->page()->runJavaScript("setFavIcon(false);");
+            qDebug() << "No bookmark found: " << url;
+        }
     }
 
     // catching move event from js
@@ -322,6 +400,12 @@ signals:
     void tabCloseEvent(int index, int newIndex);
 
     void startMoveEvent();
+
+    // db api
+    void addLinkEvent(QString url);
+    void addBookmarkEvent(QString url, QString icon, QString title);
+    void removeBookmarkEvent();
+    void checkBookmarkEvent();
 public slots:
     // void handleClick() {
     //     qDebug() << "Click event received!";
@@ -372,6 +456,25 @@ public slots:
 
     void startMove() {
         emit startMoveEvent();
+    }
+
+    // db api
+    void addLink(QString url, QString title) {
+        std::cout << "Adding link: " << url.toStdString() << " - " << title.toStdString() << std::endl;   
+    }
+
+    void addBookmark(QString url, QString icon, QString title) {
+        // qDebug() << "Adding bookmark: " << url << " - " << icon << " - " << title;
+        emit addBookmarkEvent(url, icon, title);
+    }
+
+    void removeBookmark() {
+        emit removeBookmarkEvent();
+    }
+
+    void checkBookmark() {
+        // qDebug() << "Checking bookmark: " << url;
+        emit checkBookmarkEvent();
     }
 };
 
