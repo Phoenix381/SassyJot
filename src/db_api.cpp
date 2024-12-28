@@ -61,3 +61,31 @@ bool DBController::checkBookmark(QString url) {
 
    return false;
 }
+
+int DBController::addWorkspace(QString name, QString color, QString description) {
+   Workspace workspace{-1, name.toStdString(), color.toStdString(), description.toStdString()};
+   std::cout << "Adding workspace: " << name.toStdString() << std::endl;
+   try {
+      return storage.insert(workspace);
+   } catch (std::system_error e) {
+       std::cout << e.what() << std::endl;
+   } catch (...){
+       std::cout << "unknown exeption" << std::endl;
+   }
+
+   return -1;
+}
+   
+void DBController::removeWorkspace(QString name) {
+   // TODO handle dependent data
+
+   std::cout << "Removing workspace: " << name.toStdString() << std::endl;
+
+   try {
+      storage.remove_all<Workspace>(where(c(&Workspace::name) == name.toStdString()));
+   } catch (std::system_error e) {
+       std::cout << e.what() << std::endl;
+   } catch (...){
+       std::cout << "unknown exeption" << std::endl;
+   }
+}

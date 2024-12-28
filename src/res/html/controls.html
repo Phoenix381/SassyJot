@@ -84,6 +84,7 @@
             padding-left: 5px;
 /*            background-color: #333;*/
             max-width: 77%;
+            overflow: hidden; 
         }
 
         #tab-list {
@@ -174,6 +175,10 @@
             box-shadow: -4px 4px 0 #333;
         }
 
+        #workspaceButton {
+            border: 1px solid #666;
+        }
+
         .addTabContainer {
             border-bottom: 1px solid #666 !important;
             height: 100%;
@@ -192,6 +197,10 @@
 /*            gap: 2px;*/
             display: flex;
 
+            border-bottom: 1px solid #666;
+        }
+
+        .workspace-controls {
             border-bottom: 1px solid #666;
         }
 
@@ -287,11 +296,15 @@
 
     <div class="controls">
         <div class="top-row d-flex justify-content-between mx-1">
-            <div class="tabs d-flex flex-row align-items-center">
-                <!-- <div class="tabs-container">
-                    tabs
-                </div> -->
+            <div class="workspace-controls px-0 d-flex justify-content-start">
+                <button class="btn btn-sm rounded-5 btn-custom-top" id="workspaceButton"
+                    data-bs-toggle="modal" data-bs-target="#workspaceModal"
+                >
+                    <img src="img/workspace.png" style="transform: scale(1.2);" />
+                </button>
+            </div>
 
+            <div class="tabs d-flex flex-row align-items-center">
                 <div id="tab-list" class="d-flex my-0">
                     <!-- tabs here -->
                 </div>
@@ -302,9 +315,11 @@
                     </button>
                 </div>
             </div>
+
             <div id="space">
                     <!-- <p>space</p> -->
             </div>
+
             <div class="app-controls px-1 d-flex justify-content-end" style="width: 40px;">
                 <button class="btn btn-sm rounded-5 btn-custom-top" id="minimizeButton">
                     <img src="img/minimize.png" style="transform: scale(1.2);" />
@@ -333,11 +348,13 @@
                     <img src="img/refresh.png" style="transform: scale(1.4);" />
                 </button>
             </div>
+
             <div id="address-bar" class="ps-2">
                 <form id="adress-form">
                     <input class="text-input wide" type="text" id="address-input">
                 </form>
             </div>
+
             <div class="other-controls pe-2">
                 <button class="btn btn-sm rounded-5 btn-custom-bottom" id="favButton"
                     data-bs-toggle="modal" data-bs-target="#favModal"
@@ -345,17 +362,17 @@
                     <img src="img/fav.png" style="transform: scale(1.4);" class='fav-icon shaded-img' />
                 </button>
 
-                <button class="btn btn-sm rounded-5 btn-custom-bottom" id="extensionButton">
+                <!-- <button class="btn btn-sm rounded-5 btn-custom-bottom" id="extensionButton">
                     <img src="img/extension.png" style="transform: scale(1.4);" />
-                </button>
+                </button> -->
 
                 <button class="btn btn-sm rounded-5 btn-custom-bottom" id="downloadButton">
                     <img src="img/download.png" style="transform: scale(1.4);" />
                 </button>
 
-                <button class="btn btn-sm rounded-5 btn-custom-bottom" id="menuButton">
+                <!-- <button class="btn btn-sm rounded-5 btn-custom-bottom" id="menuButton">
                     <img src="img/menu.png" style="transform: scale(1.4);" />
-                </button>
+                </button> -->
             </div>
         </div>
 
@@ -371,6 +388,7 @@
                                 <!-- <input type="text" id="address-input"> -->
                             </div>
                         </div>
+
                         <div id="fav-controls">
                             <button class="btn btn-sm btn-custom-bottom" id="fav-remove-button">
                                 Remove
@@ -378,6 +396,19 @@
                             <button class="btn btn-sm btn-custom-bottom" id="fav-cancel-button" data-bs-dismiss="modal">
                                 Cancel
                             </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- workspaces modal -->
+        <div class="modal fade" id="workspaceModal" tabindex="-1" aria-labelledby="workspaceModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content d-flex align-items-center justify-content-center">
+                    <div id="workspace-dialog" class="pt-2 pb-1 justify-center">
+                        <div id="fav-address">
+                            123
                         </div>
                     </div>
                 </div>
@@ -559,6 +590,11 @@
 
                 tab.click();
             });
+
+            // update tabs width
+            // TODO
+            // show scroll buttons on overflow
+            // TODO
         }
 
         document.getElementById('newTabButton').addEventListener('click', function() {
