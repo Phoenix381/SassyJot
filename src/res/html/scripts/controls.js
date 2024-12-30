@@ -1,13 +1,17 @@
 // element selection actions
-addressInput = document.getElementById('address-input');
+// addressInput = document.getElementById('address-input');
 addressBar = document.getElementById('address-bar');
+addressFormElement = document.getElementById('adress-form');
+addressInputElement = document.getElementById('address-input');
 
 newTabElement = document.getElementById('newTabButton');
-addressInputElement = document.getElementById('address-input');
-addressFormElement = document.getElementById('adress-form');
 
+console.log('controls loaded');
+
+// ============================================================================
 // tab logic
 // ============================================================================
+
 tabListElement = document.getElementById('tab-list');
 tabList = [];
 
@@ -55,8 +59,10 @@ function prevTab() {
     }
 }
 
+// ============================================================================
 // fav logic
 // ============================================================================
+
 let favRemoveButton = document.getElementById('fav-remove-button');
 let modal = new bootstrap.Modal(document.getElementById('favModal'));
 let workspaceModal = new bootstrap.Modal(document.getElementById('workspaceModal'));
@@ -91,8 +97,10 @@ function favDialog() {
     setFavIcon(true);
 }
 
+// ============================================================================
 // address input
 // ============================================================================
+
 addressFormElement.addEventListener('submit', function(event) {
     event.preventDefault();
     new QWebChannel(qt.webChannelTransport, function(channel) {
@@ -103,8 +111,10 @@ addressFormElement.addEventListener('submit', function(event) {
     });
 });
 
+// ============================================================================
 // new tab
 // ============================================================================
+
 function newTab() {
     new QWebChannel(qt.webChannelTransport, function(channel) {
         var handler = channel.objects.clickHandler;
@@ -187,8 +197,10 @@ function closeCurrentTab() {
     tab.dispatchEvent(new Event("auxclick"));
 }
 
+// ============================================================================
 // qt webchannel
 // ============================================================================
+
 new QWebChannel(qt.webChannelTransport, function(channel) {
     var handler = channel.objects.clickHandler;
 

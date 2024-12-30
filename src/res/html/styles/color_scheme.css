@@ -1,0 +1,9 @@
+body {
+    --bg-color: #111;
+    --secondary-color: #333;
+    
+    --text-color: #aaa;
+    --accent-color: #baa;
+
+    --border-color: #666;
+}

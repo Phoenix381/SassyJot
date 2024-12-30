@@ -1,0 +1,54 @@
+
+/* ================================================== */
+/* controls modals */
+/* ================================================== */
+
+.text-bordered {
+    border: 1px solid var(--border-color);
+}
+
+/* fav modal */
+.modal-content {
+    background-color: var(--bg-color);
+}
+
+#fav-modal {
+    gap: 1em;
+}
+
+#fav-dialog {
+    display: flex;
+    align-items: center;
+    max-width: 400px;
+
+    gap: 10px;
+}
+
+#fav-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+#fav-controls button {
+    width: 100%;
+}
+
+#fav-remove {
+    
+}
+
+#fav-address {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+
+}
+
+#fav-address div input {
+    width: 100%;
+}
+
+#fav-name {
+    min-width: 20em;
+}

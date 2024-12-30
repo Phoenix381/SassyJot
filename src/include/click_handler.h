@@ -5,12 +5,15 @@
 #include <iostream>
 
 // =============================================================================
-// passes events from js to handlers
+// re-emits events from js to handlers
 // =============================================================================
 class ClickHandler : public QObject {
     Q_OBJECT
 
 signals:
+    // misc
+    void startMoveEvent();
+
     // window
     void closeRequested();
     void maximizeRequested();
@@ -27,9 +30,6 @@ signals:
     void tabChangeEvent(int index);
     void tabCloseEvent(int index, int newIndex);
 
-    // moving window
-    void startMoveEvent();
-
     // db api
     void addLinkEvent(QString url);
     void addBookmarkEvent(QString url, QString icon, QString title);
@@ -37,29 +37,29 @@ signals:
     void checkBookmarkEvent();
 public slots:
     //     qDebug() << "Click event received!";
+    void startMove(){ emit startMoveEvent(); };
 
     // window
-    void requestClose();
-    void requestMaximize();
-    void requestMinimize();
+    void requestClose(){ emit closeRequested(); };
+    void requestMaximize(){ emit maximizeRequested(); };
+    void requestMinimize(){ emit minimizeRequested(); };
 
     // navigation
-    void requestBack();
-    void requestForward();
-    void requestReload();
-    void requestUrlChange(QString url);
+    void requestBack(){ emit backRequested(); };
+    void requestForward(){ emit forwardRequested(); };
+    void requestReload(){ emit reloadRequested(); };
+    void requestUrlChange(QString url){ emit urlChangeRequested(url); };
 
     // tabs
-    void requestNewTab();
-    void requestChangeTab(int index);
-    void requestCloseTab(int index, int newIndex);
-    void startMove();
+    void requestNewTab(){ emit createTabEvent(); };
+    void requestChangeTab(int index){ emit tabChangeEvent(index); };
+    void requestCloseTab(int index, int newIndex){ emit tabCloseEvent(index, newIndex); };
 
     // db api
     void addLink(QString url, QString title);
-    void addBookmark(QString url, QString icon, QString title);
-    void removeBookmark();
-    void checkBookmark();
+    void addBookmark(QString url, QString icon, QString title) { emit addBookmarkEvent(url, icon, title); };
+    void removeBookmark() { emit removeBookmarkEvent(); };
+    void checkBookmark() { emit checkBookmarkEvent(); };
 };
 
-#endif
+#endif // CLICK_HANDLER_H

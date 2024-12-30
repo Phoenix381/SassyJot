@@ -324,4 +324,4 @@ private slots:
     }
 };
 
-#endif
+#endif // APP_WINDOW_H
