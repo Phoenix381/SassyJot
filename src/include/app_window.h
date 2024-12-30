@@ -1,5 +1,5 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef APPWINDOW_H
+#define APPWINDOW_H
 
 #include <QtGui>
 
@@ -25,7 +25,11 @@
 #include <iostream>
 
 #include "db_api.h"
+#include "click_handler.h"
 
+// =============================================================================
+// main app window
+// =============================================================================
 class AppWindow : public QMainWindow {
     Q_OBJECT
 public:
@@ -49,62 +53,25 @@ private:
 
     DBController *db;
 
-    // creating new tab
-    // void createTab() {
-        
-    // }
+    // js events handler
+    ClickHandler *handler;
+
+    // misc functions
+    void registerEvents();
+    void registerHotkeys();
 
 protected:
-    // handling dragging window
-    void mouseMoveEvent(QMouseEvent *event) override {
-        if (dragging) {   
-            QPoint globalPos = event->globalPosition().toPoint();
-            window()->move(globalPos.x() - localPos.x(), globalPos.y() - localPos.y());
-
-            // Find the screen where the cursor is located
-            QScreen *screen = QGuiApplication::screenAt(globalPos);
-            if (screen) {
-                QRect screenGeometry = screen->geometry();
-
-                if (!this->isMaximized() && globalPos.y() <= screenGeometry.top()) {
-                    maximized = true;
-                    this->showMaximized(); 
-                } else if (globalPos.y() > screenGeometry.top()) {
-                    if(maximized) {
-                        maximized = false;
-                        this->showNormal();
-                        this->resize(lastSize);
-                    }
-                }
-            }
-        }
-    }
-
-    // handling lmb release
-    void mouseReleaseEvent(QMouseEvent *event) override {
-        if (dragging && event->button() == Qt::LeftButton) {
-            dragging = false;
-            this->releaseMouse();
-        }
-    }
+    // handling window drag anad drop
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
 public slots:
-    void closeWindow() {
-        close();   
-    }
+    // button events
+    void closeWindow();
+    void minimizeWindow();
+    void toggleMaximizeRestore();
 
-    void minimizeWindow() {
-        showMinimized();
-    }
-
-    void toggleMaximizeRestore() {
-        if (isMaximized()) {
-            showNormal();
-        } else {
-            showMaximized();
-        }
-    }
-
+    // hanadling tabs
     void createTab() {
         QWebEngineView *webView = new QWebEngineView();
         webView->load(QUrl("qrc:/html/dashboard.html"));
@@ -331,16 +298,6 @@ private slots:
         }
     }
 
-    // void updateAddressBar(int index) {
-    //     QLineEdit *addressBar = findChild<QLineEdit *>();
-    //     QTabWidget *tabWidget = findChild<QTabWidget *>();
-    //     if (addressBar && tabWidget) {
-    //         QWebEngineView *webView = qobject_cast<QWebEngineView *>(tabWidget->widget(index));
-    //         if (webView) {
-    //             addressBar->setText(webView->url().toString());
-    //         }
-    //     }
-    // }
 
 
     void reloadPage() {
@@ -353,12 +310,6 @@ private slots:
         }
     }
 
-    // void closeTab(int index) {
-    //     QTabWidget *tabWidget = findChild<QTabWidget *>();
-    //     if (tabWidget && tabWidget->count() > 1) {
-    //         tabWidget->removeTab(index);
-    //     }
-    // }
 
     void showContextMenu(const QPoint &pos) {
         QMenu contextMenu;
@@ -369,113 +320,8 @@ private slots:
     }
 
     void createNewTab() {
-        // QTabWidget *tabWidget = findChild<QTabWidget *>();
-        // if (tabWidget) {
-        //     createTab();
-        // }
-        // createTab();
+
     }
 };
 
-
-// handling js events
-class ClickHandler : public QObject {
-    Q_OBJECT
-
-signals:
-    // window
-    void closeRequested();
-    void maximizeRequested();
-    void minimizeRequested();
-
-    // navigation
-    void backRequested();
-    void forwardRequested();
-    void reloadRequested();
-    void urlChangeRequested(QString url);
-
-    // tabs
-    void createTabEvent();
-    void tabChangeEvent(int index);
-    void tabCloseEvent(int index, int newIndex);
-
-    void startMoveEvent();
-
-    // db api
-    void addLinkEvent(QString url);
-    void addBookmarkEvent(QString url, QString icon, QString title);
-    void removeBookmarkEvent();
-    void checkBookmarkEvent();
-public slots:
-    // void handleClick() {
-    //     qDebug() << "Click event received!";
-    // }
-
-    // window
-    void requestClose() {
-        emit closeRequested();
-    }
-
-    void requestMaximize() {
-        emit maximizeRequested();
-    }
-
-    void requestMinimize() {
-        emit minimizeRequested();
-    }
-
-    // navigation
-    void requestBack() {
-        emit backRequested();   
-    }
-
-    void requestForward() {
-        emit forwardRequested();   
-    }
-
-    void requestReload() {
-        emit reloadRequested();
-    }
-
-    void requestUrlChange(QString url) {
-        emit urlChangeRequested(url);
-    }
-
-    // tabs
-    void requestNewTab() {
-        emit createTabEvent();
-    }
-
-    void requestChangeTab(int index) {
-        emit tabChangeEvent(index);
-    }
-
-    void requestCloseTab(int index, int newIndex) {
-        emit tabCloseEvent(index, newIndex);
-    }
-
-    void startMove() {
-        emit startMoveEvent();
-    }
-
-    // db api
-    void addLink(QString url, QString title) {
-        std::cout << "Adding link: " << url.toStdString() << " - " << title.toStdString() << std::endl;   
-    }
-
-    void addBookmark(QString url, QString icon, QString title) {
-        // qDebug() << "Adding bookmark: " << url << " - " << icon << " - " << title;
-        emit addBookmarkEvent(url, icon, title);
-    }
-
-    void removeBookmark() {
-        emit removeBookmarkEvent();
-    }
-
-    void checkBookmark() {
-        // qDebug() << "Checking bookmark: " << url;
-        emit checkBookmarkEvent();
-    }
-};
-
-#endif // MAINWINDOW_H
+#endif
