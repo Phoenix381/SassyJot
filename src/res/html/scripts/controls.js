@@ -15,15 +15,18 @@ console.log('controls loaded');
 tabListElement = document.getElementById('tab-list');
 tabList = [];
 
+// updating title from qt
 function updateTabTitle(index, title) {
     tabList[index].children[1].innerHTML = title;
 }
 
+// updating icon from qt
 function updateTabIcon(index, icon) {
     if(icon)
         tabList[index].children[0].src = "data:image/png;base64," + icon;
 }
 
+// updating url from qt
 function updateTabURL(url) {
     if(url.startsWith("qrc:"))
         addressInputElement.value = '';
@@ -31,6 +34,7 @@ function updateTabURL(url) {
         addressInputElement.value = url;
 }
 
+// next tab
 function nextTab() {
     let currentTab = tabList.findIndex(function(el) {
         return el.classList.contains('selected');
@@ -45,6 +49,7 @@ function nextTab() {
     }
 }
 
+// previous tab
 function prevTab() {
     let currentTab = tabList.findIndex(function(el) {
         return el.classList.contains('selected');
@@ -79,6 +84,7 @@ function gotFocus() {
     }
 }
 
+// set fav icon for current page
 function setFavIcon(state) {
     if(state) {
         favButton.children[0].classList.remove('shaded-img');
@@ -91,6 +97,7 @@ function setFavIcon(state) {
     }
 }
 
+// opening fav dialog
 function favDialog() {
     modal.show();
     // modal.focus();
@@ -98,7 +105,7 @@ function favDialog() {
 }
 
 // ============================================================================
-// address input
+// address input change
 // ============================================================================
 
 addressFormElement.addEventListener('submit', function(event) {
@@ -119,8 +126,10 @@ function newTab() {
     new QWebChannel(qt.webChannelTransport, function(channel) {
         var handler = channel.objects.clickHandler;
 
+        // qt creates new tab
         handler.requestNewTab();
 
+        // creating tab element inside gui
         tab = document.createElement('div');
 
         tab.classList.add('tab');
@@ -132,9 +141,7 @@ function newTab() {
 
         icon = document.createElement('img');
         icon.src = 'img/globe_small.png';
-        // icon.width = 16;
         icon.classList.add('me-1');
-        // icon.style.transform = 'scale(1.4)';
 
         text = document.createElement('div');
         text.classList.add('pt-1');
@@ -149,20 +156,21 @@ function newTab() {
         let index = tabList.length;
         tabList.push(tab);
 
+        // tab element click
         tab.addEventListener('click', function() {
             tabList.forEach(function(el) {
                 el.classList.remove('selected'); 
             });
             tabList[index].classList.add('selected'); 
 
+            // handling swithing in qt
             handler.requestChangeTab(index);
 
-            // console.log(index);
-
-            // check if faved
+            // check if bookmark after switching to it
             handler.checkBookmark();
         });
 
+        // tab element closing
         tab.addEventListener('auxclick', function() {
             if(tabList.length == 1) {
                 return;
@@ -176,9 +184,11 @@ function newTab() {
             newIndex = index ? index - 1 : 0;
             tabList[newIndex].classList.add('selected'); 
 
+            // removing in qt
             handler.requestCloseTab(index, newIndex);
         });
 
+        // switching to created tab
         tab.click();
     });
 
@@ -198,46 +208,52 @@ function closeCurrentTab() {
 }
 
 // ============================================================================
-// qt webchannel
+// button clicking
 // ============================================================================
 
 new QWebChannel(qt.webChannelTransport, function(channel) {
     var handler = channel.objects.clickHandler;
 
+    // top close
     document.getElementById('closeButton').addEventListener('click', function() {
         handler.requestClose();
     });
 
+    // top maximize
     document.getElementById('maximizeButton').addEventListener('click', function() {
         handler.requestMaximize();
     });
 
+    // top minimize
     document.getElementById('minimizeButton').addEventListener('click', function() {
         handler.requestMinimize();
     });
 
+    // page back
     document.getElementById('backButton').addEventListener('click', function() {
         handler.requestBack();
     });
 
+    // page forward
     document.getElementById('forwardButton').addEventListener('click', function() {
         handler.requestForward();
     });
 
+    // page refresh
     document.getElementById('refreshButton').addEventListener('click', function() {
         handler.requestReload();
     });
 
+    // removing from inside fav dialog
     favRemoveButton.addEventListener('click', function() {
         let tabElement = document.getElementsByClassName('selected')[0];
-        // let url = tabElement.children[1].innerHTML;
         handler.removeBookmark();
         handler.checkBookmark();
 
         modal.hide();
     });
 
-    // drag window
+    // drag window (papssing event)
     const dragElement = document.getElementById('space');
 
     dragElement.addEventListener('mousedown', function() {
