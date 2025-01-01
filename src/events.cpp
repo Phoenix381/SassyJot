@@ -4,23 +4,26 @@
 // =============================================================================
 // connecting corresponding app events
 // =============================================================================
+
 void AppWindow::registerEvents() {
-	 // connecting js web controls to qt
+	// connecting js web controls to qt
+
+    // window controls
     connect(handler, &ClickHandler::closeRequested, this, &AppWindow::closeWindow);
     connect(handler, &ClickHandler::maximizeRequested, this, &AppWindow::toggleMaximizeRestore);
     connect(handler, &ClickHandler::minimizeRequested, this, &AppWindow::minimizeWindow);
-
     connect(handler, &ClickHandler::startMoveEvent, this, &AppWindow::startMoveEvent);
 
-    connect(handler, &ClickHandler::createTabEvent, this, &AppWindow::createTab);
-    connect(handler, &ClickHandler::tabChangeEvent, this, &AppWindow::changeTab);
-    connect(handler, &ClickHandler::tabCloseEvent, this, &AppWindow::closeTab);
-
-    // connect(addressBar, &QLineEdit::returnPressed, this, &AppWindow::loadPage);
+    // navigation
     connect(handler, &ClickHandler::backRequested, this, &AppWindow::goBack);
     connect(handler, &ClickHandler::forwardRequested, this, &AppWindow::goForward);
     connect(handler, &ClickHandler::reloadRequested, this, &AppWindow::reload);
     connect(handler, &ClickHandler::urlChangeRequested, this, &AppWindow::changeUrl);
+
+    // tab control
+    connect(handler, &ClickHandler::createTabEvent, this, &AppWindow::createTab);
+    connect(handler, &ClickHandler::tabChangeEvent, this, &AppWindow::changeTab);
+    connect(handler, &ClickHandler::tabCloseEvent, this, &AppWindow::closeTab);
 
     // setting up db api
     connect(handler, &ClickHandler::removeBookmarkEvent, this, &AppWindow::removeBookmark);

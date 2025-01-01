@@ -4,6 +4,7 @@
 // =============================================================================
 // setting up main app shortcuts
 // =============================================================================
+
 void AppWindow::registerHotkeys() {
     connect(new QShortcut(QKeySequence("Ctrl+T"), this), &QShortcut::activated, this, &AppWindow::requestNewTab);
     connect(new QShortcut(QKeySequence("Ctrl+W"), this), &QShortcut::activated, this, &AppWindow::closeCurrentTab);

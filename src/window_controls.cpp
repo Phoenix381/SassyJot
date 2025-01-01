@@ -1,5 +1,3 @@
-#ifndef WINDOW_CONTROLS_CPP
-#define WINDOW_CONTROLS_CPP
 
 #include "include/app_window.h"
 
@@ -32,6 +30,15 @@ void AppWindow::mouseMoveEvent(QMouseEvent *event) {
     }
 }
 
+// handling lmb press
+void AppWindow::startMoveEvent() {
+    dragging = true;
+    this->grabMouse();
+
+    localPos = this->mapFromGlobal(QCursor::pos());
+    lastSize = this->size();
+}
+
 // handling lmb release
 void AppWindow::mouseReleaseEvent(QMouseEvent *event) {
     if (dragging && event->button() == Qt::LeftButton) {
@@ -40,15 +47,17 @@ void AppWindow::mouseReleaseEvent(QMouseEvent *event) {
     }
 }
 
-// control buttons
+// closing window
 void AppWindow::closeWindow() {
     close();   
 }
 
+// minimizing window
 void AppWindow::minimizeWindow() {
     showMinimized();
 }
 
+// maximizing window
 void AppWindow::toggleMaximizeRestore() {
     if (isMaximized()) {
         showNormal();
@@ -57,4 +66,88 @@ void AppWindow::toggleMaximizeRestore() {
     }
 }
 
-#endif
+// =============================================================================
+// current page handling
+// =============================================================================
+
+// go back in history
+void AppWindow::goBack() {
+    QWebEngineView *webView = qobject_cast<QWebEngineView *>(tabWidget->currentWidget());
+    if (webView) {
+        webView->back();
+    }
+}
+
+// go forward in history
+void AppWindow::goForward() {
+    QWebEngineView *webView = qobject_cast<QWebEngineView *>(tabWidget->currentWidget());
+    if (webView) {
+        webView->forward();
+    }
+}
+
+// reload current page
+void AppWindow::reload() {
+    QWebEngineView *webView = qobject_cast<QWebEngineView *>(tabWidget->currentWidget());
+    if (webView) {
+        webView->reload();
+    }
+}
+
+// change url
+void AppWindow::changeUrl(QString url) {
+    QWebEngineView *webView = qobject_cast<QWebEngineView *>(tabWidget->currentWidget());   
+    if (webView) {
+        // TODO validate url properly
+        if (!url.startsWith("http://") && !url.startsWith("https://"))
+            url.prepend("http://");
+
+        webView->setUrl(QUrl(url));
+    }
+}
+
+
+// change url
+void AppWindow::loadPage() {
+    QLineEdit *addressBar = findChild<QLineEdit *>();
+    QTabWidget *tabWidget = findChild<QTabWidget *>();
+    if (addressBar && tabWidget) {
+        QWebEngineView *webView = qobject_cast<QWebEngineView *>(tabWidget->currentWidget());
+        if (webView) {
+            webView->setUrl(QUrl::fromUserInput(addressBar->text()));
+        }
+    }
+}
+
+// reload current page
+void AppWindow::reloadPage() {
+    QTabWidget *tabWidget = findChild<QTabWidget *>();
+    if (tabWidget) {
+        QWebEngineView *webView = qobject_cast<QWebEngineView *>(tabWidget->currentWidget());
+        if (webView) {
+            webView->reload();
+        }
+    }
+}
+
+// 
+void AppWindow::showContextMenu(const QPoint &pos) {
+    QMenu contextMenu;
+    QAction *newTabAction = contextMenu.addAction("New Tab");
+    connect(newTabAction, &QAction::triggered, this, &AppWindow::createNewTab);
+
+    contextMenu.exec(mapToGlobal(pos));
+}
+
+void AppWindow::createNewTab() {
+
+}
+
+void AppWindow::focus() {
+    if(! webControls->hasFocus()) {
+        // qDebug() << "Got focus";
+        webControls->setFocus();
+        // pass esc to webview
+    }
+    webControls->page()->runJavaScript("gotFocus();");
+}

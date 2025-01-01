@@ -7,6 +7,7 @@
 // =============================================================================
 // db object initialization
 // =============================================================================
+
 DBController::DBController() {
 // make_column("id", &UserType::id, primary_key().autoincrement()),
 // make_column("name", &UserType::name, default_value("name_placeholder"))));
@@ -20,6 +21,7 @@ DBController::DBController() {
 // =============================================================================
 // link related
 // =============================================================================
+
 int DBController::addLink(Link link) {
    return storage.insert(link);
 }
@@ -71,6 +73,7 @@ bool DBController::checkBookmark(QString url) {
 // =============================================================================
 // workspace related
 // =============================================================================
+
 int DBController::addWorkspace(QString name, QString color, QString description) {
    Workspace workspace{-1, name.toStdString(), color.toStdString(), description.toStdString()};
    std::cout << "Adding workspace: " << name.toStdString() << std::endl;
