@@ -105,12 +105,32 @@ void DBController::removeWorkspace(QString name) {
 }
 
 // get all
-std::vector<Workspace> DBController::getWorkspaces() {
+void DBController::getWorkspaces() {
+   std::vector<Workspace> workspaces;
+    // workspaces;
+
    try {
-      return storage.get_all<Workspace>();
+      workspaces = storage.get_all<Workspace>();
    } catch (std::system_error e) {
       std::cout << e.what() << std::endl;
+      return;
    } catch (...){
       std::cout << "unknown exeption" << std::endl;
+      return;
    }
+
+   // auto workspaces = db->getWorkspaces();
+   QJsonArray workspaceArray;
+
+   for (auto workspace : workspaces) {
+      QJsonObject workspaceObject;
+
+      workspaceObject.insert("name", QString::fromStdString(workspace.name));
+      workspaceObject.insert("color", QString::fromStdString(workspace.color));
+      workspaceObject.insert("description", QString::fromStdString(workspace.description));
+      
+      workspaceArray.append(workspaceObject);
+   }
+
+   emit workspacesReady(QJsonDocument(workspaceArray).toJson(QJsonDocument::Compact));
 }

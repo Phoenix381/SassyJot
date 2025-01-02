@@ -91,10 +91,14 @@ body {
     border-color: var(--border-color) !important;
 }
 
-/*.btn-bottom img:not(.fav-icon) {*/
-.btn-bottom img {
+.btn-bottom img:not(.fav-icon) {
+/*.btn-bottom img {*/
     width: 16px;
     filter: brightness(0.6)contrast(3.4)hue-rotate(180deg)saturate(5);
+}
+
+.fav-icon {
+    width: 16px;
 }
 
 .shaded-img {

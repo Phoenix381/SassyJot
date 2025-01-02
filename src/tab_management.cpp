@@ -7,6 +7,7 @@
 
 // creating new tab
 void AppWindow::createTab() {
+    std::cout << "Creating new tab" << std::endl;
     QWebEngineView *webView = new QWebEngineView();
     webView->load(QUrl("qrc:/html/dashboard.html"));
 

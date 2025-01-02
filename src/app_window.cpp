@@ -55,10 +55,8 @@ AppWindow::AppWindow() {
 
     // setting up web controls for window
     QWebChannel *channel = new QWebChannel(webControls);
-    handler = new ClickHandler();
-
-    use this instead of handler
-    channel->registerObject(QStringLiteral("clickHandler"), handler);
+    channel->registerObject(QStringLiteral("app"), this);
+    channel->registerObject(QStringLiteral("db"), db);
     webControls->page()->setWebChannel(channel);
 
     registerEvents();

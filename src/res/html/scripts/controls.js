@@ -1,18 +1,32 @@
-// element selection actions
-// addressInput = document.getElementById('address-input');
-const addressBar = document.getElementById('address-bar');
-const addressFormElement = document.getElementById('adress-form');
-const addressInputElement = document.getElementById('address-input');
-
-newTabElement = document.getElementById('newTabButton');
-
-console.log('controls loaded');
 
 // ============================================================================
-// tab logic
+// web channel init
 // ============================================================================
 
-const tabListElement = document.getElementById('tab-list');
+var handler;
+var db;
+
+// async channel creation
+channel = new QWebChannel(qt.webChannelTransport, function(channel) {
+    console.log("QWebChannel created");
+    console.log("Available objects:", channel.objects);
+
+    handler = channel.objects.app;
+    db = channel.objects.db;
+
+    // setting callbacks here
+    windowControls();
+    favControls();
+    workspaceControls();
+    newTabCallback();
+    adressBarCallback();
+});
+
+
+// ============================================================================
+// tab gui logic
+// ============================================================================
+
 tabList = [];
 
 // updating title from qt
@@ -27,6 +41,8 @@ function updateTabIcon(index, icon) {
 }
 
 // updating url from qt
+const addressInputElement = document.getElementById('address-input');
+
 function updateTabURL(url) {
     if(url.startsWith("qrc:"))
         addressInputElement.value = '';
@@ -65,20 +81,130 @@ function prevTab() {
 }
 
 // ============================================================================
+// address input change
+// ============================================================================
+
+const addressFormElement = document.getElementById('adress-form');
+
+function adressBarCallback() {
+    addressFormElement.addEventListener('submit', function(event) {
+        handler.pageChangeUrl(addressInputElement.value);
+
+        addressInputElement.blur();
+        event.preventDefault();
+    });
+}
+
+// ============================================================================
+// new tab
+// ============================================================================
+
+const tabListElement = document.getElementById('tab-list');
+const newTabElement = document.getElementById('newTabButton');
+
+function newTab() {
+    // qt creates new tab
+    handler.createTab();
+
+    // creating tab element inside gui
+    tab = document.createElement('div');
+
+    tab.classList.add('tab');
+    tab.classList.add('d-flex');
+    tab.classList.add('align-items-center');
+    tab.classList.add('pt-1');
+    tab.classList.add('pb-2');
+    tab.classList.add('px-2');
+
+    icon = document.createElement('img');
+    icon.src = 'img/globe_small.png';
+    icon.classList.add('me-1');
+
+    text = document.createElement('div');
+    text.classList.add('pt-1');
+    text.innerHTML = 'tab';
+
+    tab.appendChild(icon);
+    tab.appendChild(text);
+
+    // adding to tab list
+    tabListElement.appendChild(tab);
+
+    let index = tabList.length;
+    tabList.push(tab);
+
+    // tab element click
+    tab.addEventListener('click', function() {
+        tabList.forEach(function(el) {
+            el.classList.remove('selected'); 
+        });
+        tabList[index].classList.add('selected'); 
+
+        // handling swithing in qt
+        handler.changeTab(index);
+
+        // check if bookmark after switching to it
+        handler.checkBookmark();
+    });
+
+    // tab element closing
+    tab.addEventListener('auxclick', function() {
+        if(tabList.length == 1) {
+            return;
+        }
+
+        tab = tabList[index];
+        tabList.splice(index, 1);
+
+        tab.remove();
+
+        newIndex = index ? index - 1 : 0;
+        tabList[newIndex].classList.add('selected'); 
+
+        // removing in qt
+        handler.closeTab(index, newIndex);
+    });
+
+    // switching to created tab
+    tab.click();
+
+    // update tabs width
+    // TODO
+    // show scroll buttons on overflow
+    // TODO
+}
+
+
+function newTabCallback() {
+    document.getElementById('newTabButton').addEventListener('click', function() {
+        newTab();
+    });
+}
+
+function closeCurrentTab() {
+    let tab = document.getElementsByClassName('selected')[0];
+    tab.dispatchEvent(new Event("auxclick"));
+}
+
+// ============================================================================
 // fav logic
 // ============================================================================
 
 const favRemoveButton = document.getElementById('fav-remove-button');
 const modal = new bootstrap.Modal(document.getElementById('favModal'));
 const workspaceModal = new bootstrap.Modal(document.getElementById('workspaceModal'));
+const addWorkspaceModal = new bootstrap.Modal(document.getElementById('addWorkspaceModal'));
 const favButton = document.getElementById('favButton');
 
 function gotFocus() {
     // check if modal is open
     // alert('got focus');
-    if(modal._element.classList.contains('show') || workspaceModal._element.classList.contains('show')) {
+    if(modal._element.classList.contains('show') 
+    || workspaceModal._element.classList.contains('show')
+    || addWorkspaceModal._element.classList.contains('show')) {
         modal.hide();
         workspaceModal.hide();
+        addWorkspaceModal.hide();
     } else {
         addressInputElement.focus();
     }
@@ -104,26 +230,54 @@ function favDialog() {
     setFavIcon(true);
 }
 
+// fav modal init
+const favModalElement = document.getElementById('favModal');
+const iconElement = document.getElementById('favIcon');
+const textElement = document.getElementById('fav-name');
+
+favModalElement.addEventListener('show.bs.modal', function(event) {
+    let tabElement = document.getElementsByClassName('selected')[0];
+
+    iconElement.src = tabElement.children[0].src;
+    textElement.value = tabElement.children[1].innerHTML;
+});
+
+
+// fav callbacks
+function favControls() {
+    // removing from inside fav dialog
+    favRemoveButton.addEventListener('click', function() {
+        let tabElement = document.getElementsByClassName('selected')[0];
+        handler.removeBookmark();
+        handler.checkBookmark();
+
+        modal.hide();
+    });
+
+    // adding to favs by click
+    favButton.addEventListener('click', function() {
+        handler.favClick();
+        handler.checkBookmark();
+    });
+}
+
 // ============================================================================
 // workspace logic
 // ============================================================================
 
-const workspaceButton = document.getElementById('workspaceButton');
 const workspaceListElement = document.getElementById('workspace-list');
 
-new QWebChannel(qt.webChannelTransport, function(channel) {
-    var handler = channel.objects.clickHandler;
-
-    workspaceButton.addEventListener('click', function() {
-        handler.requestWorkspaces();
+// workspace callbacks
+function workspaceControls() {
+    // workspace selection button
+    document.getElementById('workspaceButton').addEventListener('click', function() {
+        db.getWorkspaces();
     });
 
-    Uncaught TypeError: channel.execCallbacks[message.id] is not a function 
-    indicates wring slots/signals usage
-
-    handler.workspacesReady.connect(function(result) {
+    // getting list from qt
+    db.workspacesReady.connect(function(result) {
         // document.getElementById("output").innerText = result;  // Display result.
-        let workspaces = result.parseJSON();
+        let workspaces = JSON.parse(result);
 
         workspaceListElement.innerHTML = '';
 
@@ -141,173 +295,50 @@ new QWebChannel(qt.webChannelTransport, function(channel) {
             workspaceListElement.appendChild(workspaceElement);
         }
     });
-});
-
-// ============================================================================
-// address input change
-// ============================================================================
-
-addressFormElement.addEventListener('submit', function(event) {
-    event.preventDefault();
-    new QWebChannel(qt.webChannelTransport, function(channel) {
-        var handler = channel.objects.clickHandler;
-        handler.requestUrlChange(addressInputElement.value);
-
-        addressInputElement.blur();
-    });
-});
-
-// ============================================================================
-// new tab
-// ============================================================================
-
-function newTab() {
-    new QWebChannel(qt.webChannelTransport, function(channel) {
-        var handler = channel.objects.clickHandler;
-
-        // qt creates new tab
-        handler.requestNewTab();
-
-        // creating tab element inside gui
-        tab = document.createElement('div');
-
-        tab.classList.add('tab');
-        tab.classList.add('d-flex');
-        tab.classList.add('align-items-center');
-        tab.classList.add('pt-1');
-        tab.classList.add('pb-2');
-        tab.classList.add('px-2');
-
-        icon = document.createElement('img');
-        icon.src = 'img/globe_small.png';
-        icon.classList.add('me-1');
-
-        text = document.createElement('div');
-        text.classList.add('pt-1');
-        text.innerHTML = 'tab';
-
-        tab.appendChild(icon);
-        tab.appendChild(text);
-
-        // adding to tab list
-        tabListElement.appendChild(tab);
-
-        let index = tabList.length;
-        tabList.push(tab);
-
-        // tab element click
-        tab.addEventListener('click', function() {
-            tabList.forEach(function(el) {
-                el.classList.remove('selected'); 
-            });
-            tabList[index].classList.add('selected'); 
-
-            // handling swithing in qt
-            handler.requestChangeTab(index);
-
-            // check if bookmark after switching to it
-            handler.checkBookmark();
-        });
-
-        // tab element closing
-        tab.addEventListener('auxclick', function() {
-            if(tabList.length == 1) {
-                return;
-            }
-
-            tab = tabList[index];
-            tabList.splice(index, 1);
-
-            tab.remove();
-
-            newIndex = index ? index - 1 : 0;
-            tabList[newIndex].classList.add('selected'); 
-
-            // removing in qt
-            handler.requestCloseTab(index, newIndex);
-        });
-
-        // switching to created tab
-        tab.click();
-    });
-
-    // update tabs width
-    // TODO
-    // show scroll buttons on overflow
-    // TODO
-}
-
-document.getElementById('newTabButton').addEventListener('click', function() {
-    newTab();
-});
-
-function closeCurrentTab() {
-    let tab = document.getElementsByClassName('selected')[0];
-    tab.dispatchEvent(new Event("auxclick"));
 }
 
 // ============================================================================
-// button clicking
+// window and page controls
 // ============================================================================
 
-new QWebChannel(qt.webChannelTransport, function(channel) {
-    var handler = channel.objects.clickHandler;
-
+// window callbacks
+function windowControls() {
     // top close
     document.getElementById('closeButton').addEventListener('click', function() {
-        handler.requestClose();
+        handler.closeWindow();
     });
 
     // top maximize
     document.getElementById('maximizeButton').addEventListener('click', function() {
-        handler.requestMaximize();
+        handler.toggleMaximize();
     });
 
     // top minimize
     document.getElementById('minimizeButton').addEventListener('click', function() {
-        handler.requestMinimize();
+        handler.minimizeWindow();
     });
 
     // page back
     document.getElementById('backButton').addEventListener('click', function() {
-        handler.requestBack();
+        handler.pageBack();
     });
 
     // page forward
     document.getElementById('forwardButton').addEventListener('click', function() {
-        handler.requestForward();
+        handler.pageForward();
     });
 
     // page refresh
     document.getElementById('refreshButton').addEventListener('click', function() {
-        handler.requestReload();
+        handler.pageReload();
     });
 
-    // removing from inside fav dialog
-    favRemoveButton.addEventListener('click', function() {
-        let tabElement = document.getElementsByClassName('selected')[0];
-        handler.removeBookmark();
-        handler.checkBookmark();
-
-        modal.hide();
-    });
-
-    // drag window (papssing event)
+    // drag window (passing event to qt)
     const dragElement = document.getElementById('space');
 
     dragElement.addEventListener('mousedown', function() {
         handler.startMove();
     });
-});
+}
 
-// fav modal
-const favModalElement = document.getElementById('favModal');
-const iconElement = document.getElementById('favIcon');
-const textElement = document.getElementById('fav-name');
-
-favModalElement.addEventListener('show.bs.modal', function(event) {
-    let tabElement = document.getElementsByClassName('selected')[0];
-
-    iconElement.src = tabElement.children[0].src;
-    textElement.value = tabElement.children[1].innerHTML;
-});
+console.log('controls script loaded');

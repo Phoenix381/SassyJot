@@ -5,12 +5,20 @@
 // bookmark management functions
 // =============================================================================
 
-// faving by hotkey
-void AppWindow::favDialog() {
-	// check if url is already bookmarked
+// fav button click
+void AppWindow::favClick() {
 	auto url = qobject_cast<QWebEngineView *>(tabWidget->currentWidget())->url().toString();
+
+	// check if url is valid
+	if(! url.startsWith("http://") && ! url.startsWith("https://")) {
+		return;
+	}
+
+	// check if url is already bookmarked
 	if(! db->checkBookmark(url)) {
 	    // save bookmark (QString url, QString title, QIcon icon) to (string url, string title, string icon)
+	    std::cout << "Saving bookmark: " << url.toStdString() << std::endl;
+
 	    auto currentIndex = tabWidget->currentIndex();
 	    auto title = qobject_cast<QWebEngineView *>(tabWidget->currentWidget())->title();
 	    auto icon = qobject_cast<QWebEngineView *>(tabWidget->currentWidget())->page()->icon();
@@ -21,13 +29,13 @@ void AppWindow::favDialog() {
 	    buffer.open(QIODevice::WriteOnly);
 	    pixmap.save(&buffer, "PNG");
 
-	    // qDebug() << "Added bookmark: " << url << ", " << title << ", " << pixels.toBase64().toStdString();
-
-	    // Bookmark bookmark(0, url, title, pixels.toBase64().toStdString());
 	    db->addBookmark(url, pixels.toBase64(), title);
-	} // else {
-	//     qDebug() << "Bookmark already exists: " << url;
-	// }
+	}
+}
+
+// faving by hotkey
+void AppWindow::favDialog() {
+	favClick();
 
 	webControls->setFocus();
 	webControls->page()->runJavaScript("favDialog();");

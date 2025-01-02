@@ -31,7 +31,7 @@ void AppWindow::mouseMoveEvent(QMouseEvent *event) {
 }
 
 // handling lmb press
-void AppWindow::startMoveEvent() {
+void AppWindow::startMove() {
     dragging = true;
     this->grabMouse();
 
@@ -58,7 +58,7 @@ void AppWindow::minimizeWindow() {
 }
 
 // maximizing window
-void AppWindow::toggleMaximizeRestore() {
+void AppWindow::toggleMaximize() {
     if (isMaximized()) {
         showNormal();
     } else {
@@ -71,7 +71,7 @@ void AppWindow::toggleMaximizeRestore() {
 // =============================================================================
 
 // go back in history
-void AppWindow::goBack() {
+void AppWindow::pageBack() {
     QWebEngineView *webView = qobject_cast<QWebEngineView *>(tabWidget->currentWidget());
     if (webView) {
         webView->back();
@@ -79,7 +79,7 @@ void AppWindow::goBack() {
 }
 
 // go forward in history
-void AppWindow::goForward() {
+void AppWindow::pageForward() {
     QWebEngineView *webView = qobject_cast<QWebEngineView *>(tabWidget->currentWidget());
     if (webView) {
         webView->forward();
@@ -87,7 +87,7 @@ void AppWindow::goForward() {
 }
 
 // reload current page
-void AppWindow::reload() {
+void AppWindow::pageReload() {
     QWebEngineView *webView = qobject_cast<QWebEngineView *>(tabWidget->currentWidget());
     if (webView) {
         webView->reload();
@@ -95,7 +95,7 @@ void AppWindow::reload() {
 }
 
 // change url
-void AppWindow::changeUrl(QString url) {
+void AppWindow::pageChangeUrl(QString url) {
     QWebEngineView *webView = qobject_cast<QWebEngineView *>(tabWidget->currentWidget());   
     if (webView) {
         // TODO validate url properly

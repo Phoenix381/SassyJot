@@ -7,6 +7,10 @@
 #include <QObject>
 #include "sqlite_orm.h"
 
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonDocument>
+
 using namespace sqlite_orm;
 
 // =============================================================================
@@ -89,7 +93,9 @@ public slots:
     // workspaces
     int addWorkspace(QString, QString, QString);
     void removeWorkspace(QString);
-    std::vector<Workspace> getWorkspaces();
+    void getWorkspaces();
+signals:
+    void workspacesReady(QString);
 };
 
 #endif // DB_API_H
