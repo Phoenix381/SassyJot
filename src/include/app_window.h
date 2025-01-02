@@ -24,6 +24,10 @@
 #include <format>
 #include <iostream>
 
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonDocument>
+
 #include "db_api.h"
 #include "click_handler.h"
 
@@ -84,6 +88,9 @@ public slots:
     void favDialog();
     void removeBookmark();
     void checkBookmark();
+
+    // handling workspaces
+    void getWorkspaces();
 
     // focusing controls by pressing esc
     void focus();

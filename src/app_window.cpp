@@ -49,13 +49,15 @@ AppWindow::AppWindow() {
     tabWidget->tabBar()->setVisible(false);
 
     // Developer tools
-    // auto dev_view = new QWebEngineView();
-    // mainLayout->addWidget(dev_view);
-    // webControls->page()->setDevToolsPage(dev_view->page());
+    auto dev_view = new QWebEngineView();
+    mainLayout->addWidget(dev_view);
+    webControls->page()->setDevToolsPage(dev_view->page());
 
     // setting up web controls for window
     QWebChannel *channel = new QWebChannel(webControls);
     handler = new ClickHandler();
+
+    use this instead of handler
     channel->registerObject(QStringLiteral("clickHandler"), handler);
     webControls->page()->setWebChannel(channel);
 

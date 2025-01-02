@@ -1,8 +1,8 @@
 // element selection actions
 // addressInput = document.getElementById('address-input');
-addressBar = document.getElementById('address-bar');
-addressFormElement = document.getElementById('adress-form');
-addressInputElement = document.getElementById('address-input');
+const addressBar = document.getElementById('address-bar');
+const addressFormElement = document.getElementById('adress-form');
+const addressInputElement = document.getElementById('address-input');
 
 newTabElement = document.getElementById('newTabButton');
 
@@ -12,7 +12,7 @@ console.log('controls loaded');
 // tab logic
 // ============================================================================
 
-tabListElement = document.getElementById('tab-list');
+const tabListElement = document.getElementById('tab-list');
 tabList = [];
 
 // updating title from qt
@@ -68,10 +68,10 @@ function prevTab() {
 // fav logic
 // ============================================================================
 
-let favRemoveButton = document.getElementById('fav-remove-button');
-let modal = new bootstrap.Modal(document.getElementById('favModal'));
-let workspaceModal = new bootstrap.Modal(document.getElementById('workspaceModal'));
-let favButton = document.getElementById('favButton');
+const favRemoveButton = document.getElementById('fav-remove-button');
+const modal = new bootstrap.Modal(document.getElementById('favModal'));
+const workspaceModal = new bootstrap.Modal(document.getElementById('workspaceModal'));
+const favButton = document.getElementById('favButton');
 
 function gotFocus() {
     // check if modal is open
@@ -103,6 +103,45 @@ function favDialog() {
     // modal.focus();
     setFavIcon(true);
 }
+
+// ============================================================================
+// workspace logic
+// ============================================================================
+
+const workspaceButton = document.getElementById('workspaceButton');
+const workspaceListElement = document.getElementById('workspace-list');
+
+new QWebChannel(qt.webChannelTransport, function(channel) {
+    var handler = channel.objects.clickHandler;
+
+    workspaceButton.addEventListener('click', function() {
+        handler.requestWorkspaces();
+    });
+
+    Uncaught TypeError: channel.execCallbacks[message.id] is not a function 
+    indicates wring slots/signals usage
+
+    handler.workspacesReady.connect(function(result) {
+        // document.getElementById("output").innerText = result;  // Display result.
+        let workspaces = result.parseJSON();
+
+        workspaceListElement.innerHTML = '';
+
+        for(let i = 0; i < workspaces.length; i++) {
+            let workspace = workspaces[i];
+            console.log(workspace);
+            let workspaceElement = document.createElement('div');
+            workspaceElement.classList.add('workspace');
+            workspaceElement.classList.add('d-flex');
+            workspaceElement.classList.add('align-items-center');
+            workspaceElement.classList.add('pt-1');
+            workspaceElement.classList.add('pb-2');
+            workspaceElement.classList.add('px-2');
+
+            workspaceListElement.appendChild(workspaceElement);
+        }
+    });
+});
 
 // ============================================================================
 // address input change
@@ -262,9 +301,9 @@ new QWebChannel(qt.webChannelTransport, function(channel) {
 });
 
 // fav modal
-let favModalElement = document.getElementById('favModal');
-let iconElement = document.getElementById('favIcon');
-let textElement = document.getElementById('fav-name');
+const favModalElement = document.getElementById('favModal');
+const iconElement = document.getElementById('favIcon');
+const textElement = document.getElementById('fav-name');
 
 favModalElement.addEventListener('show.bs.modal', function(event) {
     let tabElement = document.getElementsByClassName('selected')[0];

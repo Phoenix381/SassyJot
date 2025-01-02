@@ -35,6 +35,9 @@ signals:
     void addBookmarkEvent(QString url, QString icon, QString title);
     void removeBookmarkEvent();
     void checkBookmarkEvent();
+
+    void workspacesRequested();
+    void workspacesReady(QString workspaces);
 public slots:
     //     qDebug() << "Click event received!";
     void startMove(){ emit startMoveEvent(); };
@@ -60,6 +63,8 @@ public slots:
     void addBookmark(QString url, QString icon, QString title) { emit addBookmarkEvent(url, icon, title); };
     void removeBookmark() { emit removeBookmarkEvent(); };
     void checkBookmark() { emit checkBookmarkEvent(); };
+
+    void requestWorkspaces(){ emit workspacesRequested(); };
 };
 
 #endif // CLICK_HANDLER_H

@@ -74,6 +74,7 @@ bool DBController::checkBookmark(QString url) {
 // workspace related
 // =============================================================================
 
+// adding with full data
 int DBController::addWorkspace(QString name, QString color, QString description) {
    Workspace workspace{-1, name.toStdString(), color.toStdString(), description.toStdString()};
    std::cout << "Adding workspace: " << name.toStdString() << std::endl;
@@ -88,6 +89,7 @@ int DBController::addWorkspace(QString name, QString color, QString description)
    return -1;
 }
    
+// removing using name
 void DBController::removeWorkspace(QString name) {
    // TODO handle dependent data
 
@@ -99,5 +101,16 @@ void DBController::removeWorkspace(QString name) {
        std::cout << e.what() << std::endl;
    } catch (...){
        std::cout << "unknown exeption" << std::endl;
+   }
+}
+
+// get all
+std::vector<Workspace> DBController::getWorkspaces() {
+   try {
+      return storage.get_all<Workspace>();
+   } catch (std::system_error e) {
+      std::cout << e.what() << std::endl;
+   } catch (...){
+      std::cout << "unknown exeption" << std::endl;
    }
 }

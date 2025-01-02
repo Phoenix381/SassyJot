@@ -125,10 +125,10 @@
                         </div>
 
                         <div id="fav-controls">
-                            <button class="btn btn-sm btn-custom-bottom" id="fav-remove-button">
+                            <button class="btn btn-sm" id="fav-remove-button">
                                 Remove
                             </button>
-                            <button class="btn btn-sm btn-custom-bottom" id="fav-cancel-button" data-bs-dismiss="modal">
+                            <button class="btn btn-sm" id="fav-cancel-button" data-bs-dismiss="modal">
                                 Cancel
                             </button>
                         </div>
@@ -138,20 +138,49 @@
         </div>
 
         <!-- ======================================================================== -->
-        <!-- workspaces modal -->
+        <!-- select workspaces modal -->
         <!-- ======================================================================== -->
 
         <div class="modal fade" id="workspaceModal" tabindex="-1">
             <div class="modal-dialog modal-fullscreen">
                 <div class="modal-content d-flex align-items-center justify-content-center">
                     <div id="workspace-dialog" class="pt-2 pb-1 justify-center">
-                        <div id="fav-address">
-                            123
+                        <div id="workspace-list">
+                            <!-- workspace list -->
+                        </div>
+                        <div id="workspace-controls">
+                            <button class="btn btn-sm mt-2" id="workspace-new-button"
+                                data-bs-toggle="modal" data-bs-target="#addWorkspaceModal"
+                            >
+                                New
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- ======================================================================== -->
+        <!-- add workspace modal -(QString name, QString color, QString description) -->
+        <!-- ======================================================================== -->
+
+        <div class="modal fade" id="addWorkspaceModal" tabindex="-1">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content d-flex align-items-center justify-content-center">
+                    <div id="add-workspace-dialog" class="pt-2 pb-1 justify-center">
+                        <div id="new-workspace-controls" class="d-flex align-items-center gap-1">
+                            <input type="color" id="workspace-color">
+
+                            <div class="d-flex flex-column gap-1">
+                                <input class="text-input text-bordered" type="text" id="workspace-name" placeholder="Name">
+                                <input class="text-input text-bordered" type="text" id="workspace-description" placeholder="Description">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script src="scripts/controls.js"></script>

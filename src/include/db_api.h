@@ -89,6 +89,7 @@ public slots:
     // workspaces
     int addWorkspace(QString, QString, QString);
     void removeWorkspace(QString);
+    std::vector<Workspace> getWorkspaces();
 };
 
 #endif // DB_API_H
