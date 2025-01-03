@@ -144,17 +144,18 @@
         <div class="modal fade" id="workspaceModal" tabindex="-1">
             <div class="modal-dialog modal-fullscreen">
                 <div class="modal-content d-flex align-items-center justify-content-center">
-                    <div id="workspace-dialog" class="pt-2 pb-1 justify-center">
-                        <div id="workspace-list">
+
+                    <div id="workspace-dialog" class="d-flex my-1 gap-2 justify-center">
+                        <button class="btn btn-sm mt-2" id="workspace-new-button"
+                            data-bs-toggle="modal" data-bs-target="#addWorkspaceModal"
+                        >
+                            New
+                        </button>
+
+                        <div id="workspace-list" class="d-flex gap-2">
                             <!-- workspace list -->
                         </div>
-                        <div id="workspace-controls">
-                            <button class="btn btn-sm mt-2" id="workspace-new-button"
-                                data-bs-toggle="modal" data-bs-target="#addWorkspaceModal"
-                            >
-                                New
-                            </button>
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -168,13 +169,19 @@
             <div class="modal-dialog modal-fullscreen">
                 <div class="modal-content d-flex align-items-center justify-content-center">
                     <div id="add-workspace-dialog" class="pt-2 pb-1 justify-center">
-                        <div id="new-workspace-controls" class="d-flex align-items-center gap-1">
-                            <input type="color" id="workspace-color">
+                        <div id="new-workspace-controls" class="d-flex align-items-center gap-2">
+
+                            <input type="color" id="workspace-color" value="#808080">
 
                             <div class="d-flex flex-column gap-1">
                                 <input class="text-input text-bordered" type="text" id="workspace-name" placeholder="Name">
                                 <input class="text-input text-bordered" type="text" id="workspace-description" placeholder="Description">
                             </div>
+
+                            <button class="btn btn-sm mt-2" id="workspace-create-button">
+                                Create
+                            </button>
+                            
                         </div>
                     </div>
                 </div>

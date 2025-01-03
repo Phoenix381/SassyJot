@@ -61,3 +61,16 @@
 #fav-name {
     min-width: 20em;
 }
+
+#workspace-create-button {
+    width: 100%;
+}
+
+#workspace-color {
+    min-width: 64px;
+    min-height: 64px;
+}
+
+.text-secondary {
+    color: var(--secondary-text-color);
+}

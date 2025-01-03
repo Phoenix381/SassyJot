@@ -266,6 +266,7 @@ function favControls() {
 // ============================================================================
 
 const workspaceListElement = document.getElementById('workspace-list');
+const addWorkspaceButton = document.getElementById('workspace-create-button');
 
 // workspace callbacks
 function workspaceControls() {
@@ -288,12 +289,46 @@ function workspaceControls() {
             workspaceElement.classList.add('workspace');
             workspaceElement.classList.add('d-flex');
             workspaceElement.classList.add('align-items-center');
+            workspaceElement.classList.add('gap-1');
             workspaceElement.classList.add('pt-1');
-            workspaceElement.classList.add('pb-2');
+            workspaceElement.classList.add('pb-1');
             workspaceElement.classList.add('px-2');
+
+            let color = document.createElement('div');
+            color.style.backgroundColor = workspace.color;
+            color.style.width = '24px';
+            color.style.height = '24px';
+
+            let textContainer = document.createElement('div');
+            textContainer.classList.add('d-flex');
+            textContainer.classList.add('flex-column');
+            textContainer.classList.add('justify-content-center');
+
+            let name = document.createElement('div');
+            name.innerHTML = workspace.name;
+
+            let description = document.createElement('div');
+            description.classList.add('text-secondary');
+            description.innerHTML = workspace.description;
+
+            textContainer.appendChild(name);
+            textContainer.appendChild(description);
+
+            workspaceElement.appendChild(color);
+            workspaceElement.appendChild(textContainer);
 
             workspaceListElement.appendChild(workspaceElement);
         }
+    });
+
+    // creating new workspace
+    addWorkspaceButton.addEventListener('click', function() {
+       let name = document.getElementById('workspace-name').value;
+       let description = document.getElementById('workspace-description').value;
+       let color = document.getElementById('workspace-color').value;
+
+       db.addWorkspace(name, color, description);
+       addWorkspaceModal.hide();
     });
 }
 

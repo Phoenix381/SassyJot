@@ -15,7 +15,14 @@ DBController::DBController() {
 // auto insertedId = storage.insert(link);
 // std::cout << "insertedId = " << insertedId << std::endl;
 
+   // syncync schema on startup
    storage.sync_schema();
+
+   // creating default workspace if workspace table is empty
+   auto workspaces = storage.get_all<Workspace>();
+   if(workspaces.size() == 0) {
+      addWorkspace("Default", "#808080", "Default workspace");  
+   }
 }
 
 // =============================================================================
