@@ -73,6 +73,14 @@ AppWindow::AppWindow() {
 
     // Create initial tab with QWebEngineView
     connect(webControls, &QWebEngineView::loadFinished, this, 
-        [this](){this->webControls->page()->runJavaScript("newTabElement.click();");}
+        [this](){
+            //creating first tab
+            this->webControls->page()->runJavaScript("newTabElement.click();");
+
+            // setting workspace color
+            auto color = db->getCurrentWorkspaceColor().toStdString();
+            auto func = QString("setWorkspaceColor('%1');").arg(color.c_str());
+            this->webControls->page()->runJavaScript(func);
+        }
     );
 }

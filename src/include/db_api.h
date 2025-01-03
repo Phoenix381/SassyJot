@@ -17,6 +17,12 @@ using namespace sqlite_orm;
 // db objects
 // =============================================================================
 
+// settings
+struct Setting {
+    std::string key;
+    std::string value;
+};
+
 // visited links
 struct Link { 
     int id;
@@ -52,23 +58,29 @@ struct Note {
 // =============================================================================
 // db objects, handles CRUD as QT events
 // =============================================================================
+
 class DBController : public QObject {
     Q_OBJECT
 private:
     inline static auto storage =  make_storage("db.sqlite",
+        // settings
+        make_table("settings",
+            make_column("key", &Setting::key, primary_key()),
+            make_column("value", &Setting::value)
+        ),  
         // visited links
         make_table("links",
-           make_column("id", &Link::id, primary_key().autoincrement()),
-           make_column("url", &Link::url),
-           make_column("title", &Link::title),
-           make_column("visited_time", &Link::visited_time)
+            make_column("id", &Link::id, primary_key().autoincrement()),
+            make_column("url", &Link::url),
+            make_column("title", &Link::title),
+            make_column("visited_time", &Link::visited_time)
         ),
         // bookmarks
         make_table("bookmarks",
-           make_column("id", &Bookmark::id, primary_key().autoincrement()),
-           make_column("url", &Bookmark::url),
-           make_column("icon", &Bookmark::icon),
-           make_column("description", &Bookmark::description)
+            make_column("id", &Bookmark::id, primary_key().autoincrement()),
+            make_column("url", &Bookmark::url),
+            make_column("icon", &Bookmark::icon),
+            make_column("description", &Bookmark::description)
         ),
         // workspaces
         make_table("workspaces",
@@ -84,6 +96,10 @@ public:
     
 public slots:
     // CRUD functions
+    // settings
+    void updateSetting(QString, QString);
+    QString getSetting(QString);
+    
     // urls
     int addLink(Link);
     int addBookmark(QString, QString, QString);
@@ -94,6 +110,7 @@ public slots:
     int addWorkspace(QString, QString, QString);
     void removeWorkspace(QString);
     void getWorkspaces();
+    QString getCurrentWorkspaceColor();
 signals:
     void workspacesReady(QString);
 };

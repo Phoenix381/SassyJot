@@ -66,6 +66,27 @@
     width: 100%;
 }
 
+#workspace-new-button {
+    height: 100%;
+    border-radius: 10px;
+}
+
+#workspace-dialog {
+    max-width: 100%;
+    max-height: 90%;
+}
+
+#workspace-list {
+    overflow-x: scroll;
+    overflow-y: hidden;
+
+    flex-wrap: nowrap;
+}
+
+#workspace-list::-webkit-scrollbar {
+    display: none;
+}
+
 #workspace-color {
     min-width: 64px;
     min-height: 64px;
@@ -73,4 +94,15 @@
 
 .text-secondary {
     color: var(--secondary-text-color);
+}
+
+.workspace-item {
+    border: 1px solid var(--secondary-color);
+    border-radius: 10px;
+
+    min-width: content;
+}
+
+.workspace-item:hover {
+    background-color: var(--secondary-color);
 }

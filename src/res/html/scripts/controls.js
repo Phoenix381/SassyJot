@@ -267,6 +267,12 @@ function favControls() {
 
 const workspaceListElement = document.getElementById('workspace-list');
 const addWorkspaceButton = document.getElementById('workspace-create-button');
+const workspaceBtn = document.getElementById('workspaceButton');
+
+// setting current workspace color
+function setWorkspaceColor(color) {
+    workspaceBtn.style.setProperty('background-color', color, 'important');
+}
 
 // workspace callbacks
 function workspaceControls() {
@@ -286,7 +292,7 @@ function workspaceControls() {
             let workspace = workspaces[i];
             console.log(workspace);
             let workspaceElement = document.createElement('div');
-            workspaceElement.classList.add('workspace');
+            workspaceElement.classList.add('workspace-item');
             workspaceElement.classList.add('d-flex');
             workspaceElement.classList.add('align-items-center');
             workspaceElement.classList.add('gap-1');
@@ -298,6 +304,7 @@ function workspaceControls() {
             color.style.backgroundColor = workspace.color;
             color.style.width = '24px';
             color.style.height = '24px';
+            color.style.minWidth = '24px';
 
             let textContainer = document.createElement('div');
             textContainer.classList.add('d-flex');
@@ -323,14 +330,33 @@ function workspaceControls() {
 
     // creating new workspace
     addWorkspaceButton.addEventListener('click', function() {
-       let name = document.getElementById('workspace-name').value;
-       let description = document.getElementById('workspace-description').value;
-       let color = document.getElementById('workspace-color').value;
+       let name = document.getElementById('workspace-name');
+       let description = document.getElementById('workspace-description');
+       let color = document.getElementById('workspace-color');
 
-       db.addWorkspace(name, color, description);
+       if(!name.value) {
+            name.focus();
+            return;
+       }
+
+       if(!description.value) {
+            description.focus();
+            return;
+       }
+
+       db.addWorkspace(name.value, color.value, description.value);
        addWorkspaceModal.hide();
+       name.value = '';
+       description.value = '';
+       color.value = '#808080';
     });
 }
+
+const container = document.getElementById('workspace-list');
+container.addEventListener('wheel', (event) => {
+  event.preventDefault();
+  container.scrollLeft += event.deltaY;
+});
 
 // ============================================================================
 // window and page controls

@@ -67,6 +67,10 @@ body {
     min-height: 100%;
 }
 
+#workspaceButton img {
+    background-color: grey;
+    border-radius: 4px;
+}
 
 /* ================================================== */
 /* bottom row styling */

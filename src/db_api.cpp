@@ -21,8 +21,46 @@ DBController::DBController() {
    // creating default workspace if workspace table is empty
    auto workspaces = storage.get_all<Workspace>();
    if(workspaces.size() == 0) {
-      addWorkspace("Default", "#808080", "Default workspace");  
+      addWorkspace("Default", "#808080", "Default workspace");
+      updateSetting("workspace", "1");
    }
+}
+
+// =============================================================================
+// settings related
+// =============================================================================
+
+// updating one setting by key
+void DBController::updateSetting(QString key, QString value) {
+   // upsert to table
+   try {
+      // if(getSetting(key) == "") {
+      //    storage.insert(Setting{key.toStdString(), value.toStdString()});
+      // } else {
+      //    storage.update(Setting{key.toStdString(), value.toStdString()});
+      // }
+      storage.replace(Setting{key.toStdString(), value.toStdString()});
+   } catch (std::system_error e) {
+      std::cout << e.what() << std::endl;  
+   } catch (...){
+      std::cout << "unknown exeption in updateSetting" << std::endl;
+   }
+}
+
+// get setting by key
+QString DBController::getSetting(QString key) {
+   try {
+      auto setting = storage.get<Setting>(key.toStdString());
+
+      return QString::fromStdString(setting.value);
+   } catch (std::system_error e) {
+       std::cout << e.what() << std::endl;
+   } catch (...){
+       std::cout << "unknown exeption in getSetting" << std::endl;
+   }
+
+   // default is empty string
+   return QString();
 }
 
 // =============================================================================
@@ -41,7 +79,7 @@ int DBController::addBookmark(QString url, QString icon, QString title) {
    } catch (std::system_error e) {
        std::cout << e.what() << std::endl;
    } catch (...){
-       std::cout << "unknown exeption" << std::endl;
+       std::cout << "unknown exeption in addBookmark" << std::endl;
    }
 
    return -1;
@@ -57,7 +95,7 @@ void DBController::removeBookmark(QString url) {
    } catch (std::system_error e) {
        std::cout << e.what() << std::endl;
    } catch (...){
-       std::cout << "unknown exeption" << std::endl;
+       std::cout << "unknown exeption in removeBookmark" << std::endl;
    }
    // storage.remove(url.toStdString());
 }
@@ -71,7 +109,7 @@ bool DBController::checkBookmark(QString url) {
    } catch (std::system_error e) {
        std::cout << e.what() << std::endl;
    } catch (...){
-       std::cout << "unknown exeption" << std::endl;
+       std::cout << "unknown exeption in checkBookmark" << std::endl;
    } 
 
    return false;
@@ -86,11 +124,12 @@ int DBController::addWorkspace(QString name, QString color, QString description)
    Workspace workspace{-1, name.toStdString(), color.toStdString(), description.toStdString()};
    std::cout << "Adding workspace: " << name.toStdString() << std::endl;
    try {
+      // TODO check for empty strings
       return storage.insert(workspace);
    } catch (std::system_error e) {
        std::cout << e.what() << std::endl;
    } catch (...){
-       std::cout << "unknown exeption" << std::endl;
+       std::cout << "unknown exeption in addWorkspace" << std::endl;
    }
 
    return -1;
@@ -107,11 +146,11 @@ void DBController::removeWorkspace(QString name) {
    } catch (std::system_error e) {
        std::cout << e.what() << std::endl;
    } catch (...){
-       std::cout << "unknown exeption" << std::endl;
+       std::cout << "unknown exeption in removeWorkspace" << std::endl;
    }
 }
 
-// get all
+// get all as json
 void DBController::getWorkspaces() {
    std::vector<Workspace> workspaces;
     // workspaces;
@@ -122,7 +161,7 @@ void DBController::getWorkspaces() {
       std::cout << e.what() << std::endl;
       return;
    } catch (...){
-      std::cout << "unknown exeption" << std::endl;
+      std::cout << "unknown exeption in getWorkspaces" << std::endl;
       return;
    }
 
@@ -140,4 +179,21 @@ void DBController::getWorkspaces() {
    }
 
    emit workspacesReady(QJsonDocument(workspaceArray).toJson(QJsonDocument::Compact));
+}
+
+// getting current workspace color
+QString DBController::getCurrentWorkspaceColor() {
+   try {
+      auto id = getSetting("workspace");
+      // TODO check if id is valid
+      auto workspace = storage.get<Workspace>(id.toInt());
+      return QString::fromStdString(workspace.color);
+   } catch (std::system_error e) {
+       std::cout << e.what() << std::endl;
+   } catch (...){
+       std::cout << "unknown exeption in getWorkspaceColor" << std::endl;
+   }
+   
+   // default
+   return "#808080";
 }
