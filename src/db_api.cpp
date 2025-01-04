@@ -125,7 +125,9 @@ int DBController::addWorkspace(QString name, QString color, QString description)
    std::cout << "Adding workspace: " << name.toStdString() << std::endl;
    try {
       // TODO check for empty strings
-      return storage.insert(workspace);
+      int id = storage.insert(workspace);
+      updateSetting("workspace", QString::number(id));
+      return id;
    } catch (std::system_error e) {
        std::cout << e.what() << std::endl;
    } catch (...){

@@ -269,9 +269,15 @@ const workspaceListElement = document.getElementById('workspace-list');
 const addWorkspaceButton = document.getElementById('workspace-create-button');
 const workspaceBtn = document.getElementById('workspaceButton');
 
+let currentWorkspace;
+
 // setting current workspace color
 function setWorkspaceColor(color) {
     workspaceBtn.style.setProperty('background-color', color, 'important');
+}
+
+function setCurrentWorkspace(workspace) {
+    currentWorkspace = workspace;
 }
 
 // workspace callbacks
@@ -290,7 +296,7 @@ function workspaceControls() {
 
         for(let i = 0; i < workspaces.length; i++) {
             let workspace = workspaces[i];
-            console.log(workspace);
+
             let workspaceElement = document.createElement('div');
             workspaceElement.classList.add('workspace-item');
             workspaceElement.classList.add('d-flex');
@@ -299,6 +305,10 @@ function workspaceControls() {
             workspaceElement.classList.add('pt-1');
             workspaceElement.classList.add('pb-1');
             workspaceElement.classList.add('px-2');
+
+            if(workspace.id == currentWorkspace) {
+                workspaceElement.classList.add('selected-workspace');
+            }
 
             let color = document.createElement('div');
             color.style.backgroundColor = workspace.color;
@@ -329,38 +339,46 @@ function workspaceControls() {
                 setWorkspaceColor(workspace.color);
                 db.selectWorkspace(workspace.id);
                 workspaceModal.hide();
+                currentWorkspace = workspace.id;
             })
         }
     });
 
     // creating new workspace
     addWorkspaceButton.addEventListener('click', function() {
-       let name = document.getElementById('workspace-name');
-       let description = document.getElementById('workspace-description');
-       let color = document.getElementById('workspace-color');
+        let name = document.getElementById('workspace-name');
+        let description = document.getElementById('workspace-description');
+        let color = document.getElementById('workspace-color');
 
-       if(!name.value) {
+        if(!name.value) {
             name.focus();
             return;
-       }
+        }
 
-       if(!description.value) {
+        if(!description.value) {
             description.focus();
             return;
-       }
+        }
 
-       db.addWorkspace(name.value, color.value, description.value);
-       addWorkspaceModal.hide();
-       name.value = '';
-       description.value = '';
-       color.value = '#808080';
+        db.addWorkspace(name.value, color.value, description.value)
+        .then(function(result) {
+            currentWorkspace = result;
+        });
+
+        setWorkspaceColor(color.value);
+
+        // reset
+        addWorkspaceModal.hide();
+        name.value = '';
+        description.value = '';
+        color.value = '#808080';
     });
 }
 
 const container = document.getElementById('workspace-list');
 container.addEventListener('wheel', (event) => {
-  event.preventDefault();
-  container.scrollLeft += event.deltaY;
+    event.preventDefault();
+    container.scrollLeft += event.deltaY;
 });
 
 // ============================================================================

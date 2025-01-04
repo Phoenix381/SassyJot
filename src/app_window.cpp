@@ -81,6 +81,11 @@ AppWindow::AppWindow() {
             auto color = db->getCurrentWorkspaceColor().toStdString();
             auto func = QString("setWorkspaceColor('%1');").arg(color.c_str());
             this->webControls->page()->runJavaScript(func);
+
+            // setting workspace id
+            auto id = db->getSetting("workspace").toStdString();
+            func = QString("setCurrentWorkspace('%1');").arg(id.c_str());
+            this->webControls->page()->runJavaScript(func);
         }
     );
 }

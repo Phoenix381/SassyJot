@@ -110,3 +110,7 @@
 .workspace-item:focus {
     opacity: 0.5;
 }
+
+.selected-workspace {
+    border: 2px solid var(--border-color);
+}
