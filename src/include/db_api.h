@@ -111,6 +111,7 @@ public slots:
     void removeWorkspace(QString);
     void getWorkspaces();
     QString getCurrentWorkspaceColor();
+    void selectWorkspace(int);
 signals:
     void workspacesReady(QString);
 };

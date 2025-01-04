@@ -106,3 +106,7 @@
 .workspace-item:hover {
     background-color: var(--secondary-color);
 }
+
+.workspace-item:focus {
+    opacity: 0.5;
+}

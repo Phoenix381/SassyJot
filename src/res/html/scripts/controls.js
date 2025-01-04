@@ -320,11 +320,16 @@ function workspaceControls() {
 
             textContainer.appendChild(name);
             textContainer.appendChild(description);
-
             workspaceElement.appendChild(color);
             workspaceElement.appendChild(textContainer);
-
             workspaceListElement.appendChild(workspaceElement);
+
+            // workspaceElement.setAttribute('data-id', workspace.id);
+            workspaceElement.addEventListener('click', function() {
+                setWorkspaceColor(workspace.color);
+                db.selectWorkspace(workspace.id);
+                workspaceModal.hide();
+            })
         }
     });
 

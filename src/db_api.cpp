@@ -171,6 +171,7 @@ void DBController::getWorkspaces() {
    for (auto workspace : workspaces) {
       QJsonObject workspaceObject;
 
+      workspaceObject.insert("id", QString::number(workspace.id));
       workspaceObject.insert("name", QString::fromStdString(workspace.name));
       workspaceObject.insert("color", QString::fromStdString(workspace.color));
       workspaceObject.insert("description", QString::fromStdString(workspace.description));
@@ -196,4 +197,9 @@ QString DBController::getCurrentWorkspaceColor() {
    
    // default
    return "#808080";
+}
+
+// selecting workspace
+void DBController::selectWorkspace(int id) {
+   updateSetting("workspace", QString::number(id));
 }
