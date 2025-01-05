@@ -135,13 +135,15 @@ function newTab() {
 
     // tab element click
     tab.addEventListener('click', function() {
+        let i = tabList.indexOf(this);
+
         tabList.forEach(function(el) {
             el.classList.remove('selected'); 
         });
-        tabList[index].classList.add('selected'); 
+        tabList[i].classList.add('selected'); 
 
         // handling swithing in qt
-        handler.changeTab(index);
+        handler.changeTab(i);
 
         // check if bookmark after switching to it
         handler.checkBookmark();
