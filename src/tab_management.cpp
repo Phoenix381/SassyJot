@@ -17,6 +17,7 @@ void AppWindow::createTab() {
     // connect(webView, &QWebEngineView::urlChanged, this, &AppWindow::updateAddressBar);
     tabWidget->setTabsClosable(true);
 
+    // updating tab titles
     connect(webView->page(), &QWebEnginePage::titleChanged, this, [this, webView](const QString &title) {
         int index = tabWidget->indexOf(webView);
         if (index != -1) {
@@ -30,6 +31,7 @@ void AppWindow::createTab() {
         }
     });
 
+    // updating tab icons
     connect(webView->page(), &QWebEnginePage::iconChanged, this, [this, webView](const QIcon &icon) {
         int index = tabWidget->indexOf(webView);
         if (index != -1) {
@@ -48,6 +50,7 @@ void AppWindow::createTab() {
         }
     });
 
+    // url change event
     connect( webView->page(), &QWebEnginePage::urlChanged, this, [this, webView](const QUrl &url) {
         int index = tabWidget->indexOf(webView);
         int currentIndex = tabWidget->currentIndex();
@@ -55,12 +58,16 @@ void AppWindow::createTab() {
             webControls->page()->runJavaScript(std::format(
                 "updateTabURL('{0}');", url.toString().toStdString()
             ).c_str());
+
         // check if faved
         if (db->checkBookmark(url.toString()))
             webControls->page()->runJavaScript("setFavIcon(true);");
         else
             webControls->page()->runJavaScript("setFavIcon(false);");
-    });   
+
+        // saving to current workspace
+        db->updateWorkspaceUrl(index, url.toString());
+    }); 
 }
 
 // creating new tab in gui
@@ -80,6 +87,10 @@ void AppWindow::changeTab(int index) {
 
 // close tab by index and set new index
 void AppWindow::closeTab(int index, int nextIndex) {
+    // updating workspace
+    db->removeWorkspaceUrl(index);
+
+    // closing tab
     tabWidget->removeTab(index);
     tabWidget->setCurrentIndex(nextIndex);
 }

@@ -205,3 +205,54 @@ QString DBController::getCurrentWorkspaceColor() {
 void DBController::selectWorkspace(int id) {
    updateSetting("workspace", QString::number(id));
 }
+
+// saving url to some workspace
+void DBController::updateWorkspaceUrl(int index, QString url) {
+   int workspaceId = getSetting("workspace").toInt();
+
+   try {
+      // check if url already exists
+      auto urls = storage.get_all<WorkspaceUrl>(where(
+         c(&WorkspaceUrl::order) == index && c(&WorkspaceUrl::workspace_id) == workspaceId
+         )
+      );
+         
+      if(urls.size() > 0) {
+         storage.update_all(  
+            set(c(&WorkspaceUrl::url) = url.toStdString()),
+            where(
+               c(&WorkspaceUrl::order) == index && c(&WorkspaceUrl::workspace_id) == workspaceId
+            )
+         );
+      } else {
+         storage.insert(WorkspaceUrl{-1, index, workspaceId, url.toStdString()});
+      }
+   } catch (std::system_error e) {
+       std::cout << e.what() << std::endl;
+   } catch (...){
+       std::cout << "unknown exeption in updateWorkspaceUrl" << std::endl;
+   }
+}
+
+// removing url from workspace
+void DBController::removeWorkspaceUrl(int index) {
+   int workspaceId = getSetting("workspace").toInt();
+
+   try {
+      // remove from workspace
+      storage.remove_all<WorkspaceUrl>(
+         where(
+            c(&WorkspaceUrl::order) == index && c(&WorkspaceUrl::workspace_id) == workspaceId
+         )
+      );
+      // decrease index for all geq than id
+      storage.update_all(
+         set(c(&WorkspaceUrl::order) = c(&WorkspaceUrl::order) - 1),
+         where(c(&WorkspaceUrl::order) >= index)
+      );
+   } catch (std::system_error e) {
+       std::cout << e.what() << std::endl;
+   } catch (...){
+       std::cout << "unknown exeption in removeWorkspaceUrl" << std::endl;
+   }
+}

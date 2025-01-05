@@ -47,6 +47,14 @@ struct Workspace {
     std::string description;
 };
 
+// workspace url
+struct WorkspaceUrl {
+    int id;
+    int order;
+    int workspace_id;
+    std::string url;
+};
+
 // note
 struct Note {
     int id;  
@@ -88,6 +96,13 @@ private:
             make_column("name", &Workspace::name),
             make_column("color", &Workspace::color),
             make_column("description", &Workspace::description)
+        ),
+        // workspace urls
+        make_table("workspace_urls",
+            make_column("id", &WorkspaceUrl::id, primary_key().autoincrement()),
+            make_column("order", &WorkspaceUrl::order),
+            make_column("workspace_id", &WorkspaceUrl::workspace_id),
+            make_column("url", &WorkspaceUrl::url)
         )
     );
 public:
@@ -112,6 +127,8 @@ public slots:
     void getWorkspaces();
     QString getCurrentWorkspaceColor();
     void selectWorkspace(int);
+    void updateWorkspaceUrl(int, QString);
+    void removeWorkspaceUrl(int);
 signals:
     void workspacesReady(QString);
 };
