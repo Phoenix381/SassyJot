@@ -1,5 +1,5 @@
+
 body {
-    background-color: var(--bg-color);
     user-select: none;  
 }
 
@@ -10,21 +10,10 @@ body {
 
 .top-row {
     min-height: 3vh;
-/*    border-bottom: 1px solid var(--border-color);*/
 }
 
-/* button */
 .btn-top {
-    color: var(--text-color) !important;
-    background-color: var(--bg-color) !important;
-    border-color: var(--bg-color) !important;
-
     min-height: 3vh;
-}
-
-.btn-top:hover {
-    background-color: var(--border-color) !important;
-    border-color: var(--border-color) !important;
 }
 
 .btn-top img {
@@ -77,22 +66,11 @@ body {
 /* ================================================== */
 
 .bottom-row {
-    background-color: var(--secondary-color);
-
     min-height: 4vh;
 }
 
 .btn-bottom {
-    color: var(--text-color) !important;
-    background-color: var(--secondary-color) !important;
-    border-color: var(--secondary-color) !important;
-
     min-height: 3vh;
-}
-
-.btn-bottom:hover {
-    background-color: var(--border-color) !important;
-    border-color: var(--border-color) !important;
 }
 
 .btn-bottom img:not(.fav-icon) {
@@ -127,23 +105,12 @@ body {
     width: 100%;
 }
 
-.text-input {
-    background-color: var(--secondary-color) !important;
-    color: var(--accent-color);
-
-    border: 2px solid var(--secondary-color) !important;
-    border-radius: 10px;
+.text-input { 
     padding: 2px;
     padding-left: 6px;
 }
 
 .text-input:focus {
-    background-color: #111;
-    color: var(--accent-color);
-
-    outline: none;
-    border: 2px solid var(--accent-color) !important;
-    border-radius: 10px;
     padding: 2px;
     padding-left: 4px;
 }

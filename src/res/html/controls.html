@@ -8,7 +8,7 @@
     <link href="3rd_party/bootstrap.css" rel="stylesheet">
     <link href="styles/color_scheme.css" rel="stylesheet">
     <link href="styles/controls.css" rel="stylesheet">
-    <link href="styles/modals.css" rel="stylesheet">
+    <link href="styles/control_modals.css" rel="stylesheet">
 </head>
 <body>
     <script src="3rd_party/bootstrap.js"></script>
@@ -66,39 +66,39 @@
         <!-- bottom row -->
         <!-- ======================================================================== -->
 
-        <div class="bottom-row d-flex justify-content-between align-items-center ps-1 py-1">    
+        <div class="bottom-row accent d-flex justify-content-between align-items-center ps-1 py-1">    
             <div class="page-controls">
-                <button class="btn btn-sm rounded-5 btn-bottom" id="backButton">
+                <button class="btn accent btn-sm rounded-5 btn-bottom" id="backButton">
                     <img src="img/arrow_back.png" style="transform: scale(1.4);" />
                 </button>
 
-                <button class="btn btn-sm rounded-5 btn-bottom" id="forwardButton">
+                <button class="btn accent btn-sm rounded-5 btn-bottom" id="forwardButton">
                     <img src="img/arrow_forward.png" style="transform: scale(1.4);" />
                 </button>
 
-                <button class="btn btn-sm rounded-5 btn-bottom" id="refreshButton">
+                <button class="btn accent btn-sm rounded-5 btn-bottom" id="refreshButton">
                     <img src="img/refresh.png" style="transform: scale(1.4);" />
                 </button>
             </div>
 
             <div id="address-bar" class="ps-2">
                 <form id="adress-form">
-                    <input class="text-input wide" type="text" id="address-input">
+                    <input class="text-input wide accent" type="text" id="address-input">
                 </form>
             </div>
 
             <div class="other-controls pe-2">
-                <button class="btn btn-sm rounded-5 btn-bottom" id="favButton"
+                <button class="btn accent btn-sm rounded-5 btn-bottom" id="favButton"
                     data-bs-toggle="modal" data-bs-target="#favModal"
                 >
                     <img src="img/fav.png" style="transform: scale(1.4);" class='fav-icon shaded-img' />
                 </button>
 
-                <!-- <button class="btn btn-sm rounded-5 btn-bottom" id="extensionButton">
+                <!-- <button class="btn accent btn-sm rounded-5 btn-bottom" id="extensionButton">
                     <img src="img/extension.png" style="transform: scale(1.4);" />
                 </button> -->
 
-                <button class="btn btn-sm rounded-5 btn-bottom" id="downloadButton">
+                <button class="btn accent btn-sm rounded-5 btn-bottom" id="downloadButton">
                     <img src="img/download.png" style="transform: scale(1.4);" />
                 </button>
 
@@ -119,16 +119,16 @@
                         <div id="fav-address">
                             <div class="px-2"><img id="favIcon"/></div>
                             <div>
-                                <input class="text-input text-bordered" type="text" id="fav-name">
+                                <input class="text-input text-bordered accent" type="text" id="fav-name">
                                 <!-- <input type="text" id="address-input"> -->
                             </div>
                         </div>
 
                         <div id="fav-controls">
-                            <button class="btn btn-sm" id="fav-remove-button">
+                            <button class="btn btn-sm bordered" id="fav-remove-button">
                                 Remove
                             </button>
-                            <button class="btn btn-sm" id="fav-cancel-button" data-bs-dismiss="modal">
+                            <button class="btn btn-sm bordered" id="fav-cancel-button" data-bs-dismiss="modal">
                                 Cancel
                             </button>
                         </div>
@@ -146,7 +146,7 @@
                 <div class="modal-content d-flex align-items-center justify-content-center">
 
                     <div id="workspace-dialog" class="d-flex my-1 gap-2 justify-center">
-                        <button class="btn btn-sm ms-2" id="workspace-new-button"
+                        <button class="btn btn-sm ms-2 bordered" id="workspace-new-button"
                             data-bs-toggle="modal" data-bs-target="#addWorkspaceModal"
                         >
                             New
@@ -174,11 +174,11 @@
                             <input type="color" id="workspace-color" value="#808080">
 
                             <div class="d-flex flex-column gap-1">
-                                <input class="text-input text-bordered" type="text" id="workspace-name" placeholder="Name">
-                                <input class="text-input text-bordered" type="text" id="workspace-description" placeholder="Description">
+                                <input class="text-input text-bordered accent" type="text" id="workspace-name" placeholder="Name">
+                                <input class="text-input text-bordered accent" type="text" id="workspace-description" placeholder="Description">
                             </div>
 
-                            <button class="btn btn-sm mt-2" id="workspace-create-button">
+                            <button class="btn btn-sm mt-2 bordered" id="workspace-create-button">
                                 Create
                             </button>
 

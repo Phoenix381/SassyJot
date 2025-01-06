@@ -7,20 +7,6 @@
     border: 1px solid var(--border-color);
 }
 
-/* fav modal */
-.modal-content {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-}
-
-.modal-content .btn {
-    color: var(--text-color);
-    border-color: var(--secondary-color);
-}
-
-.modal-content .btn:hover {
-    background-color: var(--secondary-color);
-}
 
 #fav-modal {
     gap: 1em;
