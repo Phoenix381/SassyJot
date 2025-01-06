@@ -1,0 +1,52 @@
+
+.content {
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    gap : 1em;
+    justify-content: center;
+}
+
+.control-row {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: 1em;
+
+}
+
+.control-row > input {
+    flex-grow: 1;
+}
+
+.planner-block {
+    flex-grow: 1;
+
+    display: flex;
+    gap: 1em;
+    heigh: 100%;
+    width: 100%;
+}
+
+#sticky-notes {
+    width: 30%;
+
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+
+    border-radius: 15px;
+
+    padding: 1em;
+}
+
+#planner {
+    width: 70%;
+
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+
+    border-radius: 15px;
+    
+    padding: 1em;
+}

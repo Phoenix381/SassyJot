@@ -6,37 +6,37 @@
     <title>Dashboard</title>
 
     <link href="3rd_party/bootstrap.css" rel="stylesheet">
+    <link href="styles/color_scheme.css" rel="stylesheet">
+    <link href="styles/dashboard.css" rel="stylesheet">
 </head>
 <body>
     <script src="3rd_party/bootstrap.js"></script>
     <script src="3rd_party/qwebchannel.js"></script>
 
-    <style>
-        body {
-            background-color: #111;
-            color: #aaa;
+    <div class="content px-4 py-4">
+        <div class="control-row">
+            <button class="btn accent bordered" id="settings-button">Settings</button>
 
-            -webkit-user-select: none;
-            user-select: none;  
-        }
+            <input class="accent" id="search-box" type="text" placeholder="Search">
 
-        .container {
-            max-width: 1024px;
-            height: 100vh;
+            <button class="btn accent bordered" id="switch-mode-button">Switch Mode</button>
+        </div>
 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            align-content: center;
+        <div class="planner-block">
+            <div id="sticky-notes" class="">
+                <div id="stick-container">
+                    notes here
+                </div>
+            </div>
 
-            text-align: center;
-        }
-    </style>
-
-    <div class="container">
-        <div class="content">
-            <h1>Dashboard</h1>
+            <div id="planner" class="">
+                <div id="planner-container">
+                    planner
+                </div>
+            </div>
         </div>
     </div>
+
+    <script src="scripts/dashboard.js"></script>
 </body>
 </html>
