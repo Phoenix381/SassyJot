@@ -27,6 +27,7 @@ channel = new QWebChannel(qt.webChannelTransport, function(channel) {
 // tab gui logic
 // ============================================================================
 
+const tabListElement = document.getElementById('tab-list');
 tabList = [];
 
 // updating title from qt
@@ -80,6 +81,11 @@ function prevTab() {
     }
 }
 
+tabListElement.addEventListener('wheel', (event) => {
+    event.preventDefault();
+    tabListElement.scrollLeft += event.deltaY;
+});
+
 // ============================================================================
 // address input change
 // ============================================================================
@@ -99,7 +105,6 @@ function adressBarCallback() {
 // new tab
 // ============================================================================
 
-const tabListElement = document.getElementById('tab-list');
 const newTabElement = document.getElementById('newTabButton');
 
 function newTab(inside=true) {

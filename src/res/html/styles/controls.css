@@ -122,6 +122,15 @@ body {
 
 #tab-list {
     min-height: 100%;
+
+    overflow-x: scroll;
+    overflow-y: hidden;
+
+    flex-wrap: nowrap;
+}
+
+#tab-list::-webkit-scrollbar {
+    display: none;
 }
 
 .tab {
