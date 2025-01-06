@@ -6,10 +6,13 @@
 // =============================================================================
 
 // creating new tab
-void AppWindow::createTab() {
-    std::cout << "Creating new tab" << std::endl;
+void AppWindow::createTab(QString url) {
     QWebEngineView *webView = new QWebEngineView();
-    webView->load(QUrl("qrc:/html/dashboard.html"));
+
+    if (!url.isEmpty())
+        webView->load(QUrl(url));
+    else
+        webView->load(QUrl("qrc:/html/dashboard.html"));
 
     int index = tabWidget->addTab(webView, "New Tab");
     tabWidget->setCurrentIndex(index);
@@ -98,6 +101,26 @@ void AppWindow::closeTab(int index, int nextIndex) {
 // close current tab
 void AppWindow::closeCurrentTab() {
     webControls->page()->runJavaScript("closeCurrentTab();");
+
+    // updating workspace
+    db->removeWorkspaceUrl(tabWidget->currentIndex());
+}
+
+// close all open tabs
+void AppWindow::closeAllTabs() {
+    // TODO check for memory leaks
+    tabWidget->clear();
+}
+
+// open all tabs from selected workspace
+void AppWindow::loadWorkspaceTabs(int workspaceId) {
+    auto urls = db->getWorkspaceUrls(workspaceId);
+    std::cout << "Loading " << urls.size() << " tabs from workspace " << workspaceId << std::endl;
+
+    for (auto el : urls) {
+        webControls->page()->runJavaScript("newTab(false);");
+        createTab(QString::fromStdString(el.url));
+    }
 }
 
 // next tab

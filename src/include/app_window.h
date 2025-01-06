@@ -68,6 +68,8 @@ protected:
 public slots:
     void requestNewTab();
     void closeCurrentTab();
+    void closeAllTabs();
+    void loadWorkspaceTabs(int workspaceId);
     void nextTab();
     void prevTab();
 
@@ -92,7 +94,7 @@ public slots:
     void pageChangeUrl(QString url);
 
     // tabs
-    void createTab();
+    void createTab(QString url);
     void changeTab(int index);
     void closeTab(int index, int newIndex);
 

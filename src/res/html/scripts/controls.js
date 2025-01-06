@@ -102,9 +102,10 @@ function adressBarCallback() {
 const tabListElement = document.getElementById('tab-list');
 const newTabElement = document.getElementById('newTabButton');
 
-function newTab() {
+function newTab(inside=true) {
     // qt creates new tab
-    handler.createTab();
+    if(inside)
+        handler.createTab('');
 
     // creating tab element inside gui
     tab = document.createElement('div');
@@ -339,7 +340,15 @@ function workspaceControls() {
             // workspaceElement.setAttribute('data-id', workspace.id);
             workspaceElement.addEventListener('click', function() {
                 setWorkspaceColor(workspace.color);
+
                 db.selectWorkspace(workspace.id);
+                // closing all tabs
+                handler.closeAllTabs();
+                tabListElement.innerHTML = '';
+                tabList = [];
+                // loading tabs from new workspace
+                handler.loadWorkspaceTabs(workspace.id);
+
                 workspaceModal.hide();
                 currentWorkspace = workspace.id;
             })

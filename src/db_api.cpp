@@ -239,20 +239,27 @@ void DBController::removeWorkspaceUrl(int index) {
    int workspaceId = getSetting("workspace").toInt();
 
    try {
+      // decrease index for all geq than id
+      storage.update_all(
+         set(c(&WorkspaceUrl::order) = c(&WorkspaceUrl::order) - 1),
+         where(c(&WorkspaceUrl::order) >= index)
+      );
       // remove from workspace
       storage.remove_all<WorkspaceUrl>(
          where(
             c(&WorkspaceUrl::order) == index && c(&WorkspaceUrl::workspace_id) == workspaceId
          )
       );
-      // decrease index for all geq than id
-      storage.update_all(
-         set(c(&WorkspaceUrl::order) = c(&WorkspaceUrl::order) - 1),
-         where(c(&WorkspaceUrl::order) >= index)
-      );
    } catch (std::system_error e) {
        std::cout << e.what() << std::endl;
    } catch (...){
        std::cout << "unknown exeption in removeWorkspaceUrl" << std::endl;
    }
+}
+
+// get aall workspace  urls by id
+std::vector<WorkspaceUrl> DBController::getWorkspaceUrls(int) {
+   int workspaceId = getSetting("workspace").toInt();
+
+   return storage.get_all<WorkspaceUrl>(where(c(&WorkspaceUrl::workspace_id) == workspaceId));
 }

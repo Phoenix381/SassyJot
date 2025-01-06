@@ -49,9 +49,9 @@ AppWindow::AppWindow() {
     tabWidget->tabBar()->setVisible(false);
 
     // Developer tools
-    // auto dev_view = new QWebEngineView();
-    // mainLayout->addWidget(dev_view);
-    // webControls->page()->setDevToolsPage(dev_view->page());
+    auto dev_view = new QWebEngineView();
+    mainLayout->addWidget(dev_view);
+    webControls->page()->setDevToolsPage(dev_view->page());
 
     // setting up web controls for window
     QWebChannel *channel = new QWebChannel(webControls);
@@ -74,17 +74,22 @@ AppWindow::AppWindow() {
     // Create initial tab with QWebEngineView
     connect(webControls, &QWebEngineView::loadFinished, this, 
         [this](){
-            //creating first tab
-            this->webControls->page()->runJavaScript("newTabElement.click();");
+            auto workspace_id = db->getSetting("workspace");
+            
+            // loading workspace tabs
+            loadWorkspaceTabs(workspace_id.toInt());
 
+            // check if any tabs open
+            if (tabWidget->count() == 0)
+                this->webControls->page()->runJavaScript("newTabElement.click();");
+            
             // setting workspace color
             auto color = db->getCurrentWorkspaceColor().toStdString();
             auto func = QString("setWorkspaceColor('%1');").arg(color.c_str());
             this->webControls->page()->runJavaScript(func);
 
             // setting workspace id
-            auto id = db->getSetting("workspace").toStdString();
-            func = QString("setCurrentWorkspace('%1');").arg(id.c_str());
+            func = QString("setCurrentWorkspace('%1');").arg(workspace_id.toStdString().c_str());
             this->webControls->page()->runJavaScript(func);
         }
     );

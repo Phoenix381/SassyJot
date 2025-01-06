@@ -129,6 +129,7 @@ public slots:
     void selectWorkspace(int);
     void updateWorkspaceUrl(int, QString);
     void removeWorkspaceUrl(int);
+    std::vector<WorkspaceUrl> getWorkspaceUrls(int);
 signals:
     void workspacesReady(QString);
 };
