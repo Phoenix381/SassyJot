@@ -12,18 +12,27 @@
 <body>
     <script src="3rd_party/bootstrap.js"></script>
     <script src="3rd_party/qwebchannel.js"></script>
+    <script src="3rd_party/d3.js"></script>
 
     <div class="content px-4 py-4">
-        <div id="graph">
+        <div id="graph-container">
             <!-- graph drawing here -->
-            graph
         </div>
 
         <div class="right-block">
             <div id="controls">
-                <button id="fullscreen-button" class="btn accent bordered">Fullscreen</button>
-                <button id="search-button" class="btn accent bordered">Search</button>
-                <button id="edit-button" class="btn accent bordered">Edit</button>
+                <button id="fullscreen-button" class="btn accent bordered">
+                    <img src="img/fullscreen.png" />
+                </button>
+                <button id="search-button" class="btn accent bordered">
+                    <img src="img/search.png" />
+                </button>
+                <button id="edit-button" class="btn accent bordered">
+                    <img src="img/edit.png" />
+                </button>
+                <button id="new-button" class="btn accent bordered">
+                    <img src="img/add.png" />
+                </button>
             </div>
 
             <div id="note-content">

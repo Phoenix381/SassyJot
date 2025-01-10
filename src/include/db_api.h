@@ -57,10 +57,27 @@ struct WorkspaceUrl {
 
 // note
 struct Note {
-    int id;  
+    int id;
+    int workspace_id;
     std::string title;
     std::string content;
+    int group_id;
     // int created_time;
+};
+
+// note group
+// TODO description etc
+struct NoteGroup {
+    int id;
+    std::string color;
+    std::string name;
+};
+
+// note link
+// TODO link description
+struct NoteLink {
+    int source_id;
+    int target_id;
 };
 
 // =============================================================================
@@ -103,6 +120,25 @@ private:
             make_column("order", &WorkspaceUrl::order),
             make_column("workspace_id", &WorkspaceUrl::workspace_id),
             make_column("url", &WorkspaceUrl::url)
+        ),
+        // notes
+        make_table("notes",
+            make_column("id", &Note::id, primary_key().autoincrement()),
+            make_column("workspace_id", &Note::workspace_id),
+            make_column("title", &Note::title),
+            make_column("content", &Note::content)
+        ),
+        // note links
+        make_table("note_links",
+            make_column("source_id", &NoteLink::source_id),
+            make_column("target_id", &NoteLink::target_id),
+            primary_key(&NoteLink::source_id, &NoteLink::target_id)
+        ),
+        // note groups
+        make_table("note_groups",
+            make_column("id", &NoteGroup::id, primary_key().autoincrement()),
+            make_column("color", &NoteGroup::color),
+            make_column("name", &NoteGroup::name)
         )
     );
 public:
@@ -130,6 +166,22 @@ public slots:
     void updateWorkspaceUrl(int, QString);
     void removeWorkspaceUrl(int);
     std::vector<WorkspaceUrl> getWorkspaceUrls(int);
+
+    // notes
+    void addNote(QString, QString, int);
+    void removeNote(int);
+    std::vector<Note> getCurrentWorkspaceNotes();
+
+    // note links
+    void addNoteLink(int, int);
+    void removeNoteLink(int, int);
+    void removeAllNoteLinks(int);
+    std::vector<NoteLink> getCurrentWorkspaceNoteLinks();
+
+    // note groups
+    void addNoteGroup(QString, QString);
+    void removeNoteGroup(int);
+    std::vector<NoteGroup> getNoteGroups();
 signals:
     void workspacesReady(QString);
 };

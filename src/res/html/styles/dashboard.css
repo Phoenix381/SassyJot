@@ -18,6 +18,11 @@
 
 .control-row > input {
     flex-grow: 1;
+    padding-left: 1em;
+}
+
+.control-row > button > img {
+    width: 32px;
 }
 
 .planner-block {

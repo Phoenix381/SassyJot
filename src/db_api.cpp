@@ -24,6 +24,12 @@ DBController::DBController() {
       addWorkspace("Default", "#808080", "Default workspace");
       updateSetting("workspace", "1");
    }
+
+   // default note group
+   auto noteGroups = storage.get_all<NoteGroup>();
+   if(noteGroups.size() == 0) {
+      addNoteGroup("#808080", "General");  
+   }
 }
 
 // =============================================================================
@@ -262,4 +268,156 @@ std::vector<WorkspaceUrl> DBController::getWorkspaceUrls(int) {
    int workspaceId = getSetting("workspace").toInt();
 
    return storage.get_all<WorkspaceUrl>(where(c(&WorkspaceUrl::workspace_id) == workspaceId));
+}
+
+// =============================================================================
+// note related
+// =============================================================================
+
+// add note to current workspace
+void DBController::addNote(QString title, QString content, int group_id = 1) {
+   int workspaceId = getSetting("workspace").toInt();
+
+   try {
+      storage.insert(Note{-1, workspaceId, title.toStdString(), content.toStdString()});
+   } catch (std::system_error e) {
+      std::cout << e.what() << std::endl;  
+   } catch (...){
+      std::cout << "unknown exeption in addNote" << std::endl;
+   }
+}
+
+// remove note by id
+void DBController::removeNote(int id) {
+   try {  
+      storage.remove_all<Note>(where(c(&Note::id) == id));
+   } catch (std::system_error e) {
+      std::cout << e.what() << std::endl;  
+   } catch (...){
+      std::cout << "unknown exeption in removeNote" << std::endl;
+   }
+}
+
+// get all notes for current workspace
+std::vector<Note> DBController::getCurrentWorkspaceNotes() {
+   int workspaceId = getSetting("workspace").toInt();
+
+   try {
+      return storage.get_all<Note>(where(c(&Note::workspace_id) == workspaceId));
+   } catch (std::system_error e) {
+      std::cout << e.what() << std::endl;  
+   } catch (...){
+      std::cout << "unknown exeption in getNotes" << std::endl;
+   }
+
+   return {};
+}
+
+// =============================================================================
+// note link related
+// =============================================================================
+
+// adding link between two notes
+void DBController::addNoteLink(int source, int target) {
+   try {
+      storage.insert(NoteLink{source, target});
+   } catch (std::system_error e) {
+      std::cout << e.what() << std::endl;  
+   } catch (...){
+      std::cout << "unknown exeption in addNoteLink" << std::endl;
+   }
+}
+
+// removing link between two notes
+void DBController::removeNoteLink(int source, int target) {
+   try {  
+      storage.remove_all<NoteLink>(where(c(&NoteLink::source_id) == source && c(&NoteLink::target_id) == target));
+   } catch (std::system_error e) {
+      std::cout << e.what() << std::endl;  
+   } catch (...){
+      std::cout << "unknown exeption in removeNoteLink" << std::endl;
+   }
+}
+
+// remove all links of note
+void DBController::removeAllNoteLinks(int noteId) {
+   try {
+      storage.remove_all<NoteLink>(where(c(&NoteLink::source_id) == noteId || c(&NoteLink::target_id) == noteId));
+   } catch (std::system_error e) {
+      std::cout << e.what() << std::endl;  
+   } catch (...){
+      std::cout << "unknown exeption in removeAllNoteLinks" << std::endl;
+   }
+}
+
+// get all links of workspace
+std::vector<NoteLink> DBController::getCurrentWorkspaceNoteLinks() {
+   int workspaceId = getSetting("workspace").toInt();
+
+   try {
+      // using join
+      auto links = storage.select(
+         columns(&NoteLink::source_id, &NoteLink::target_id),
+         left_join<Note>(
+            on(c(&Note::id) == &NoteLink::source_id)
+         ),
+         where(
+            c(&Note::workspace_id) == workspaceId  
+         )
+      );
+
+      // creating NoteLink vector
+      std::vector<NoteLink> noteLinks;
+      for (auto link : links) {
+         auto noteLink = std::make_from_tuple<NoteLink>(link);
+         noteLinks.push_back(noteLink);
+      }
+
+      return noteLinks;
+   } catch (std::system_error e) {
+      std::cout << e.what() << std::endl;  
+   } catch (...){
+      std::cout << "unknown exeption in getCurrentWorkspaceNoteLinks" << std::endl;
+   }
+
+   return {};
+}
+
+// =============================================================================
+// note group related
+// =============================================================================
+
+// adding group
+void DBController::addNoteGroup(QString color, QString name) {
+   try {
+      storage.insert(NoteGroup{-1, color.toStdString(), name.toStdString()});
+   } catch (std::system_error e) {
+      std::cout << e.what() << std::endl;  
+   } catch (...){
+      std::cout << "unknown exeption in addNoteGroup" << std::endl;
+   }
+}
+
+// removing group by id
+void DBController::removeNoteGroup(int id) {
+   try {  
+      storage.remove<NoteGroup>(id);
+   } catch (std::system_error e) {
+      std::cout << e.what() << std::endl;  
+   } catch (...){
+      std::cout << "unknown exeption in removeNoteGroup" << std::endl;
+   }
+}
+
+// get all groups
+std::vector<NoteGroup> DBController::getNoteGroups() {
+   try {
+      return storage.get_all<NoteGroup>();
+   } catch (std::system_error e) {
+      std::cout << e.what() << std::endl;  
+   } catch (...){
+      std::cout << "unknown exeption in getNoteGroups" << std::endl;
+   }
+
+   return {};
 }
