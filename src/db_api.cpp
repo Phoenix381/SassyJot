@@ -30,6 +30,15 @@ DBController::DBController() {
    if(noteGroups.size() == 0) {
       addNoteGroup("#808080", "General");  
    }
+
+   // test notes
+   auto notes = storage.get_all<Note>();
+   if(notes.size() == 0) {
+      addNote("test", "test", 1);
+      addNote("test2", "test2", 1);
+
+      addNoteLink(1, 2);
+   }
 }
 
 // =============================================================================
@@ -319,6 +328,8 @@ std::vector<Note> DBController::getCurrentWorkspaceNotes() {
 
 // adding link between two notes
 void DBController::addNoteLink(int source, int target) {
+   std::cout << "Adding link: " << source << " -> " << target << std::endl;
+   
    try {
       storage.insert(NoteLink{source, target});
    } catch (std::system_error e) {

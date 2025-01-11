@@ -131,8 +131,8 @@ private:
         // note links
         make_table("note_links",
             make_column("source_id", &NoteLink::source_id),
-            make_column("target_id", &NoteLink::target_id),
-            primary_key(&NoteLink::source_id, &NoteLink::target_id)
+            make_column("target_id", &NoteLink::target_id)
+            // primary_key(&NoteLink::source_id, &NoteLink::target_id)
         ),
         // note groups
         make_table("note_groups",

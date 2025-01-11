@@ -1,8 +1,6 @@
 
 #include <QApplication>
 #include <QMainWindow>
-#include <QWebEngineView>
-#include <QWebChannel>
 #include <QLineEdit>
 #include <QVBoxLayout>
 #include <QUrl>

@@ -14,6 +14,14 @@ void AppWindow::createTab(QString url) {
     else
         webView->load(QUrl("qrc:/html/dashboard.html"));
 
+    // TODO memory usage
+    // setting up web controls for tab
+    QWebChannel *channel = new QWebChannel(webView);
+    channel->registerObject(QStringLiteral("app"), this);
+    channel->registerObject(QStringLiteral("db"), db);
+    webView->page()->setWebChannel(channel);
+
+    // adding tab to tab widget
     int index = tabWidget->addTab(webView, "New Tab");
     tabWidget->setCurrentIndex(index);
 

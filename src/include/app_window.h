@@ -20,6 +20,9 @@
 #include <QTabBar>
 #include <QMenu>
 
+#include <QWebEngineView>
+#include <QWebChannel>
+
 #include <vector>
 #include <format>
 #include <iostream>
@@ -101,13 +104,10 @@ public slots:
     // db api
     void removeBookmark();
     void checkBookmark();
-    // void addLink(QString url, QString title);
-    // void addBookmark(QString url, QString icon, QString title);
-
-    // handling workspaces
-    // void getWorkspaces();
-
-    // void requestWorkspaces(){ emit workspacesRequested(); };
+    
+    // note api
+    QString getNodes();
+    QString getLinks();
 
 private slots:
     void loadPage();

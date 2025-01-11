@@ -1,4 +1,44 @@
 
+// ============================================================================
+// qt webchannel logic
+// ============================================================================
+
+var handler;
+var db;
+
+// data arrays
+let nodes_input = [];
+let links_input = [];
+
+const contentElement = document.getElementById("note-content");
+
+channel = new QWebChannel(qt.webChannelTransport, function(channel) {
+    console.log("QWebChannel created for graph");
+    console.log("Available objects:", channel.objects);
+
+    handler = channel.objects.app;
+    db = channel.objects.db;
+
+    // setting callbacks here
+    document.addEventListener('DOMContentLoaded', function() {
+        Promise.all([
+            handler.getNodes(),            
+            handler.getLinks()
+        ])
+        .then(function(results) {
+            nodes_input = JSON.parse(results[0]);
+            links_input = JSON.parse(results[1]);
+
+            contentElement.innerHTML = results;
+
+            drawGraph();
+        })
+    });
+});
+
+// ============================================================================
+// graph drawing logic
+// ============================================================================
 
 let container = document.getElementById("graph-container");
 // Declare the chart dimensions and margins.
@@ -14,163 +54,127 @@ const height = container.offsetHeight;
 // INPUT FORMAT
 // notes: [], links: [], note_groups: []
 // note { id, workspace_id, title, content, group_id }
-// link { source, target }
+// link { source_id, target_id }
 // note_group { id, color }
 
 // TODO node colors
 // TODO link additional properties
 
+function drawGraph() {
+    // TODO color selection
+    // Specify the color scale.
+    const color = d3.scaleOrdinal(d3.schemeCategory10);
+    const textColor = window.getComputedStyle(document.body).getPropertyValue('--text-color');
 
-// TEST DATA
-let nodes_input = [
-    {
-      id: 1,
-      title: "a",
-      group_id: 1
-    },
-    {
-      id: 2,
-      title: "b",
-      group_id: 2
-    },
-    {
-      id: 3,
-      title: "c",
-      group_id: 2
-    },
-    {
-      id: 4,
-      title: "d",
-      group_id: 4
-    },
-    {
-      id: 5,
-      title: "e",
-      group_id: 5
+    // The force simulation mutates links and nodes, so create a copy
+    // so that re-evaluating this cell produces the same result.
+    const links = links_input.map(d => ({...d}));
+    const nodes = nodes_input.map(d => ({...d}));
+
+    // Create a simulation with several forces.
+    const simulation = d3.forceSimulation(nodes)
+      .force("link", d3.forceLink(links).id(d => d.id))
+      .force("charge", d3.forceManyBody())
+      .force("center", d3.forceCenter(width / 2, height / 2))
+      .on("tick", ticked);
+
+    // Create an SVG element.
+    const svg = d3.select("#graph-container")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height);
+
+    // Add a line for each link, and a circle for each node.
+    const link = svg.append("g")
+      .attr("stroke", "#999")
+      .attr("stroke-opacity", 0.6)
+    .selectAll()
+    .data(links)
+    .join("line")
+      // .attr("stroke-width", d => Math.sqrt(d.value));
+
+    // Create node groups.
+    const node = svg.append("g")
+      .attr("stroke", "#fff")
+      .attr("stroke-width", 1.5)
+      .attr("class", "node")
+    .selectAll("g")
+    .data(nodes)
+    .join("g");
+
+    // Add a circle for each node.
+    node.append("circle")
+        .attr("r", 5)
+        .attr("fill", d => color(d.group_id));
+
+    // Add id labels for each node.
+    node.append("text")
+        .attr("fill", textColor)
+        .attr("dy", 24)
+        .attr("text-anchor", "middle")
+        .text(d => d.title);
+
+    // Add drag behaviors to each node.
+    node.call(d3.drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended));
+
+    // Set the position attributes of links and nodes each time the simulation ticks.
+    function ticked() {
+    link
+        .attr("x1", d => d.source.x)
+        .attr("y1", d => d.source.y)
+        .attr("x2", d => d.target.x)
+        .attr("y2", d => d.target.y);
+
+    node
+        .attr("transform", d => `translate(${d.x},${d.y})`);
     }
-]
-let links_input = [
-    {   
-        source: "a",   
-        target: "b",
-        value: 1
-    },
-    {
-        source: "a",   
-        target: "c",
-        value: 2
-    },
-    {
-        source: "c",      
-        target: "d",
-        value: 3
-    },
-    {
-        source: "b",      
-        target: "e",
-        value: 4
-    },
-    {
-        source: "b",         
-        target: "c",
-        value: 5
+
+    // Reheat the simulation when drag starts, and fix the subject position.
+    function dragstarted(event) {
+        if (!event.active) simulation.alphaTarget(0.3).restart();
+        event.subject.fx = event.subject.x;
+        event.subject.fy = event.subject.y;
     }
-]
 
+    // Update the subject (dragged node) position during drag.
+    function dragged(event) {
+        event.subject.fx = event.x;
+        event.subject.fy = event.y;
+    }
 
-// TODO color selection
-// Specify the color scale.
-const color = d3.scaleOrdinal(d3.schemeCategory10);
-const textColor = window.getComputedStyle(document.body).getPropertyValue('--text-color');
+    // Restore the target alpha so the simulation cools after dragging ends.
+    // Unfix the subject position now that it’s no longer being dragged.
+    function dragended(event) {
+        if (!event.active) simulation.alphaTarget(0);
+        event.subject.fx = null;
+        event.subject.fy = null;
+    }
 
-// The force simulation mutates links and nodes, so create a copy
-// so that re-evaluating this cell produces the same result.
-const links = links_input.map(d => ({...d}));
-const nodes = nodes_input.map(d => ({...d}));
-
-// Create a simulation with several forces.
-const simulation = d3.forceSimulation(nodes)
-  .force("link", d3.forceLink(links).id(d => d.title))
-  .force("charge", d3.forceManyBody())
-  .force("center", d3.forceCenter(width / 2, height / 2))
-  .on("tick", ticked);
-
-// Create an SVG element.
-const svg = d3.select("#graph-container")
-  .append("svg")
-  .attr("width", width)
-  .attr("height", height);
-
-// Add a line for each link, and a circle for each node.
-const link = svg.append("g")
-  .attr("stroke", "#999")
-  .attr("stroke-opacity", 0.6)
-.selectAll()
-.data(links)
-.join("line")
-  // .attr("stroke-width", d => Math.sqrt(d.value));
-
-// Create node groups.
-const node = svg.append("g")
-  .attr("stroke", "#fff")
-  .attr("stroke-width", 1.5)
-  .attr("class", "node")
-.selectAll("g")
-.data(nodes)
-.join("g");
-
-// Add a circle for each node.
-node.append("circle")
-    .attr("r", 5)
-    .attr("fill", d => color(d.group_id));
-
-// Add id labels for each node.
-node.append("text")
-    .attr("fill", textColor)
-    .attr("dy", 24)
-    .attr("text-anchor", "middle")
-    .text(d => d.title);
-
-// Add drag behaviors to each node.
-node.call(d3.drag()
-    .on("start", dragstarted)
-    .on("drag", dragged)
-    .on("end", dragended));
-
-// Set the position attributes of links and nodes each time the simulation ticks.
-function ticked() {
-link
-    .attr("x1", d => d.source.x)
-    .attr("y1", d => d.source.y)
-    .attr("x2", d => d.target.x)
-    .attr("y2", d => d.target.y);
-
-node
-    .attr("transform", d => `translate(${d.x},${d.y})`);
+    // When this cell is re-run, stop the previous simulation. (This doesn’t
+    // really matter since the target alpha is zero and the simulation will
+    // stop naturally, but it’s a good practice.)
+    // invalidation.then(() => simulation.stop());
 }
 
-// Reheat the simulation when drag starts, and fix the subject position.
-function dragstarted(event) {
-    if (!event.active) simulation.alphaTarget(0.3).restart();
-    event.subject.fx = event.subject.x;
-    event.subject.fy = event.subject.y;
-}
+// ============================================================================
+// modal logic
+// ============================================================================
 
-// Update the subject (dragged node) position during drag.
-function dragged(event) {
-    event.subject.fx = event.x;
-    event.subject.fy = event.y;
-}
+const modal = new bootstrap.Modal(document.getElementById('addModal'));
+const addNoteBtn = document.getElementById('add-note-button');
 
-// Restore the target alpha so the simulation cools after dragging ends.
-// Unfix the subject position now that it’s no longer being dragged.
-function dragended(event) {
-    if (!event.active) simulation.alphaTarget(0);
-    event.subject.fx = null;
-    event.subject.fy = null;
-}
+const title = document.getElementById('new-title');
+const content = document.getElementById('new-content');
 
-// When this cell is re-run, stop the previous simulation. (This doesn’t
-// really matter since the target alpha is zero and the simulation will
-// stop naturally, but it’s a good practice.)
-// invalidation.then(() => simulation.stop());
+addNoteBtn.addEventListener('click', function() {
+    // check if title is not empty
+    if(title.value == "") {
+        title.focus();
+        return;
+    }
+
+
+})
