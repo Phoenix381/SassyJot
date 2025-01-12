@@ -283,17 +283,19 @@ std::vector<WorkspaceUrl> DBController::getWorkspaceUrls(int) {
 // note related
 // =============================================================================
 
-// add note to current workspace
-void DBController::addNote(QString title, QString content, int group_id = 1) {
+// add note to current workspace, reeturn id
+int DBController::addNote(QString title, QString content, int group_id = 1) {
    int workspaceId = getSetting("workspace").toInt();
 
    try {
-      storage.insert(Note{-1, workspaceId, title.toStdString(), content.toStdString()});
+      return storage.insert(Note{-1, workspaceId, title.toStdString(), content.toStdString()});
    } catch (std::system_error e) {
       std::cout << e.what() << std::endl;  
    } catch (...){
       std::cout << "unknown exeption in addNote" << std::endl;
    }
+
+   return -1;
 }
 
 // remove note by id
@@ -329,7 +331,7 @@ std::vector<Note> DBController::getCurrentWorkspaceNotes() {
 // adding link between two notes
 void DBController::addNoteLink(int source, int target) {
    std::cout << "Adding link: " << source << " -> " << target << std::endl;
-   
+
    try {
       storage.insert(NoteLink{source, target});
    } catch (std::system_error e) {

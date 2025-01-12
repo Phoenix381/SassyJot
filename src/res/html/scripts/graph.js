@@ -40,8 +40,8 @@ channel = new QWebChannel(qt.webChannelTransport, function(channel) {
 
 let container = document.getElementById("graph-container");
 // Declare the chart dimensions and margins.
-const width = container.offsetWidth;
-const height = container.offsetHeight;
+let width = container.offsetWidth;
+let height = container.offsetHeight;
 
 // not sure if needed
 // const marginTop = 20;
@@ -63,6 +63,9 @@ function clamp(x, lo, hi) {
 }
 
 function drawGraph() {
+    // reset canvas
+    container.innerHTML = "";
+
     // TODO color selection
     // Specify the color scale.
     const color = d3.scaleOrdinal(d3.schemeCategory10);
@@ -184,6 +187,14 @@ function drawGraph() {
     // invalidation.then(() => simulation.stop());
 }
 
+// updatin on windodw resize
+window.addEventListener('resize', function() {
+    width = container.offsetWidth;
+    height = container.offsetHeight;
+
+    drawGraph();
+});
+
 // ============================================================================
 // modal logic
 // ============================================================================
@@ -201,5 +212,7 @@ addNoteBtn.addEventListener('click', function() {
         return;
     }
 
-
+    // adding new note
+    // TODO add group
+    handler.addNote(title.value, content.value);
 });

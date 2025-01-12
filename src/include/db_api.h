@@ -168,7 +168,7 @@ public slots:
     std::vector<WorkspaceUrl> getWorkspaceUrls(int);
 
     // notes
-    void addNote(QString, QString, int);
+    int addNote(QString, QString, int);
     void removeNote(int);
     std::vector<Note> getCurrentWorkspaceNotes();
 

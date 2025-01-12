@@ -45,3 +45,21 @@ QString AppWindow::getLinks() {
 
     return QJsonDocument(linksArray).toJson(QJsonDocument::Compact);
 }
+
+// add new note
+void AppWindow::addNote(QString title, QString content, int group_id = 1) {
+    // adding note
+    auto id = db->addNote(title, content, group_id);
+
+    // check for links and create if needed
+    // links are #(\d+) , selecting capture groups (1 is first group, 0 is whole match)
+    QRegularExpression link_regex("#(\\d+)");
+    auto links = link_regex.globalMatch(content);
+    if (links.hasMatch()) {
+        for (auto link : links) {
+            auto link_id = link.captured(1).toInt();
+            db->addLink(Link{id, link_id});
+        }
+    }
+    
+}
