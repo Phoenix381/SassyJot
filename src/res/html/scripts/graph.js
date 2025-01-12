@@ -29,8 +29,6 @@ channel = new QWebChannel(qt.webChannelTransport, function(channel) {
             nodes_input = JSON.parse(results[0]);
             links_input = JSON.parse(results[1]);
 
-            contentElement.innerHTML = results;
-
             drawGraph();
         })
     });
@@ -59,6 +57,10 @@ const height = container.offsetHeight;
 
 // TODO node colors
 // TODO link additional properties
+
+function clamp(x, lo, hi) {
+  return x < lo ? lo : x > hi ? hi : x;
+}
 
 function drawGraph() {
     // TODO color selection
@@ -95,8 +97,8 @@ function drawGraph() {
 
     // Create node groups.
     const node = svg.append("g")
-      .attr("stroke", "#fff")
-      .attr("stroke-width", 1.5)
+      // .attr("stroke", "#fff")
+      // .attr("stroke-width", 1.5)
       .attr("class", "node")
     .selectAll("g")
     .data(nodes)
@@ -104,7 +106,7 @@ function drawGraph() {
 
     // Add a circle for each node.
     node.append("circle")
-        .attr("r", 5)
+        .attr("r", 6)
         .attr("fill", d => color(d.group_id));
 
     // Add id labels for each node.
@@ -140,17 +142,40 @@ function drawGraph() {
     }
 
     // Update the subject (dragged node) position during drag.
-    function dragged(event) {
-        event.subject.fx = event.x;
-        event.subject.fy = event.y;
+    function dragged(event, d) {
+        // event.subject.fx = event.x;
+        // event.subject.fy = event.y;
+
+        d.fx = clamp(event.x, 0, width);
+        d.fy = clamp(event.y, 0, height);
+        simulation.alpha(1).restart();
     }
 
     // Restore the target alpha so the simulation cools after dragging ends.
     // Unfix the subject position now that it’s no longer being dragged.
     function dragended(event) {
         if (!event.active) simulation.alphaTarget(0);
-        event.subject.fx = null;
-        event.subject.fy = null;
+        // event.subject.fx = null;
+        // event.subject.fy = null;
+    }
+
+    // Selecting node
+    node.on("click", click);
+
+    function click(event, d) {
+        contentElement.innerHTML = d.content;
+
+        // deselect all
+        d3.selectAll(".selected").classed("selected", false);
+
+        // add class to node circle and text
+        d3.select(this).select("circle").classed("selected", true);
+        d3.select(this).select("text").classed("selected", true);
+
+        // unfixing position
+        simulation.alpha(1).restart();
+        // delete d.fx;
+        // delete d.fy;
     }
 
     // When this cell is re-run, stop the previous simulation. (This doesn’t
@@ -177,4 +202,4 @@ addNoteBtn.addEventListener('click', function() {
     }
 
 
-})
+});

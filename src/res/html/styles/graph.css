@@ -72,3 +72,8 @@ button > img {
 
     flex-grow: 1;
 }
+
+.selected {
+    stroke: var(--accent-color);
+    stroke-width: 2;
+}
