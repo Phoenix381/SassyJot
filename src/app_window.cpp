@@ -13,12 +13,41 @@
 #include <iostream>
 #include "include/app_window.h"
 
+// =============================================================================
+// message filtering
+// =============================================================================
+
+void customMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg) {
+    // Suppress specific warning messages
+    if (msg.contains("of object 'AppWindow' has no notify signal")) {
+        return;
+    }
+
+    // Default message handling
+    switch (type) {
+        case QtDebugMsg:
+            qDebug() << msg;
+            break;
+        case QtWarningMsg:
+            qWarning() << msg;
+            break;
+        case QtCriticalMsg:
+            qCritical() << msg;
+            break;
+        case QtFatalMsg:
+            qFatal("%s", qPrintable(msg));
+            break;
+    }
+}
 
 // =============================================================================
 // app window initialization
 // =============================================================================
 
 AppWindow::AppWindow() {
+    // message filter
+    qInstallMessageHandler(customMessageHandler);
+
     // db api
     db = new DBController();
     
@@ -47,9 +76,9 @@ AppWindow::AppWindow() {
     tabWidget->tabBar()->setVisible(false);
 
     // Developer tools
-    // auto dev_view = new QWebEngineView();
-    // mainLayout->addWidget(dev_view);
-    // webControls->page()->setDevToolsPage(dev_view->page());
+    dev_view = new QWebEngineView();
+    mainLayout->addWidget(dev_view);
+    webControls->page()->setDevToolsPage(dev_view->page());
 
     // setting up web controls for window
     QWebChannel *channel = new QWebChannel(webControls);

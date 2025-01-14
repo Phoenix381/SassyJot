@@ -1,5 +1,11 @@
 
 // ============================================================================
+// markdown logic
+// ============================================================================
+
+
+
+// ============================================================================
 // qt webchannel logic
 // ============================================================================
 
@@ -10,8 +16,6 @@ var db;
 let nodes_input = [];
 let links_input = [];
 
-const contentElement = document.getElementById("note-content");
-
 channel = new QWebChannel(qt.webChannelTransport, function(channel) {
     console.log("QWebChannel created for graph");
     console.log("Available objects:", channel.objects);
@@ -20,34 +24,29 @@ channel = new QWebChannel(qt.webChannelTransport, function(channel) {
     db = channel.objects.db;
 
     // setting callbacks here
-    document.addEventListener('DOMContentLoaded', function() {
-        Promise.all([
-            handler.getNodes(),            
-            handler.getLinks()
-        ])
-        .then(function(results) {
-            nodes_input = JSON.parse(results[0]);
-            links_input = JSON.parse(results[1]);
+    Promise.all([
+        handler.getNodes(),            
+        handler.getLinks()
+    ])
+    .then(function(results) {
+        nodes_input = JSON.parse(results[0]);
+        links_input = JSON.parse(results[1]);
 
-            drawGraph();
-        })
-    });
+        console.log(nodes_input);
+        console.log(links_input);
+
+        MathJax.startup.promise.then(() => {
+            // MathJax is ready, you can now use its functions
+            console.log('MathJax is ready');
+        }).catch((err) => console.log('MathJax failed to load: ' + err.message));
+
+        drawGraph();
+    })
 });
 
 // ============================================================================
 // graph drawing logic
 // ============================================================================
-
-let container = document.getElementById("graph-container");
-// Declare the chart dimensions and margins.
-let width = container.offsetWidth;
-let height = container.offsetHeight;
-
-// not sure if needed
-// const marginTop = 20;
-// const marginRight = 20;
-// const marginBottom = 20;
-// const marginLeft = 20;
 
 // INPUT FORMAT
 // notes: [], links: [], note_groups: []
@@ -63,6 +62,11 @@ function clamp(x, lo, hi) {
 }
 
 function drawGraph() {
+    let container = document.getElementById("graph-container");
+    let contentElement = document.getElementById("note-content");
+
+    let width = container.offsetWidth;
+    let height = container.offsetHeight;
     // reset canvas
     container.innerHTML = "";
 
@@ -166,7 +170,17 @@ function drawGraph() {
     node.on("click", click);
 
     function click(event, d) {
-        contentElement.innerHTML = d.content;
+        // init markdownit
+        const md = window.markdownit({
+            breaks: true // Enable line breaks
+        });
+
+        // rendering note
+        contentElement.innerHTML = md.render(d.content);
+        hljs.highlightAll();
+        MathJax.typesetPromise([contentElement])
+            .catch((err) => console.log('Typeset failed: ' + err.message));
+
 
         // deselect all
         d3.selectAll(".selected").classed("selected", false);

@@ -24,6 +24,7 @@ QString AppWindow::getNodes() {
         nodesArray.append(nodeObject);
     }
 
+    // qDebug() << QJsonDocument(nodesArray).toJson(QJsonDocument::Compact);
     return QJsonDocument(nodesArray).toJson(QJsonDocument::Compact);
 }
 
@@ -43,11 +44,12 @@ QString AppWindow::getLinks() {
         linksArray.append(linkObject);
     }
 
+    // qDebug() << QJsonDocument(linksArray).toJson(QJsonDocument::Compact);
     return QJsonDocument(linksArray).toJson(QJsonDocument::Compact);
 }
 
 // add new note
-void AppWindow::addNote(QString title, QString content, int group_id = 1) {
+void AppWindow::addNote(QString title, QString content, int group_id) {
     // adding note
     auto id = db->addNote(title, content, group_id);
 
@@ -55,11 +57,10 @@ void AppWindow::addNote(QString title, QString content, int group_id = 1) {
     // links are #(\d+) , selecting capture groups (1 is first group, 0 is whole match)
     QRegularExpression link_regex("#(\\d+)");
     auto links = link_regex.globalMatch(content);
-    if (links.hasMatch()) {
-        for (auto link : links) {
-            auto link_id = link.captured(1).toInt();
-            db->addLink(Link{id, link_id});
-        }
+
+    while (links.hasNext()) {
+        auto link = links.next();   
+        auto link_id = link.captured(1).toInt();
+        db->addNoteLink(id, link_id);
     }
-    
 }

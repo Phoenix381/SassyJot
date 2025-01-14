@@ -34,8 +34,8 @@ DBController::DBController() {
    // test notes
    auto notes = storage.get_all<Note>();
    if(notes.size() == 0) {
-      addNote("test", "test", 1);
-      addNote("test2", "test2", 1);
+      addNote("test", "```python\nimport test\n\ndef func():\n\treturn 1```", 1);
+      addNote("test2", "# test2\n$ \\sum_i^n a_n = a_1 + \\dots + a_n $", 1);
 
       addNoteLink(1, 2);
    }

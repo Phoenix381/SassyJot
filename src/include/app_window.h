@@ -44,6 +44,8 @@ public:
 private:
     // window controls
     QWebEngineView *webControls;
+    // optional debug
+    QWebEngineView *dev_view;
     // main page
     QTabWidget *tabWidget;
 

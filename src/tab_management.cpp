@@ -28,6 +28,11 @@ void AppWindow::createTab(QString url) {
     // connect(webView, &QWebEngineView::urlChanged, this, &AppWindow::updateAddressBar);
     tabWidget->setTabsClosable(true);
 
+    // connect debug
+    if(dev_view) {
+        webView->page()->setDevToolsPage(dev_view->page());
+    }
+
     // updating tab titles
     connect(webView->page(), &QWebEnginePage::titleChanged, this, [this, webView](const QString &title) {
         int index = tabWidget->indexOf(webView);
@@ -89,7 +94,12 @@ void AppWindow::requestNewTab() {
 // change tab by index
 void AppWindow::changeTab(int index) {
     tabWidget->setCurrentIndex(index);
+
     QWebEngineView *webView = qobject_cast<QWebEngineView *>(tabWidget->currentWidget());
+
+    // switchig dev view
+    if(dev_view)
+        webView->page()->setDevToolsPage(dev_view->page());
 
     webControls->page()->runJavaScript(std::format(
                 "updateTabURL('{0}');", webView->url().toString().toStdString()
@@ -104,6 +114,12 @@ void AppWindow::closeTab(int index, int nextIndex) {
     // closing tab
     tabWidget->removeTab(index);
     tabWidget->setCurrentIndex(nextIndex);
+
+    // switchig dev view
+    if(dev_view) {
+        QWebEngineView *webView = qobject_cast<QWebEngineView *>(tabWidget->currentWidget());
+        webView->page()->setDevToolsPage(dev_view->page());
+    }
 }
 
 // close current tab
@@ -150,6 +166,12 @@ void AppWindow::nextTab() {
 
     // check if faved
     this->checkBookmark();
+
+    // switchig dev view
+    if(dev_view) {
+        QWebEngineView *webView = qobject_cast<QWebEngineView *>(tabWidget->currentWidget());
+        webView->page()->setDevToolsPage(dev_view->page());
+    }
 }
 
 // prev tab
@@ -171,4 +193,10 @@ void AppWindow::prevTab() {
 
     // check if faved
     this->checkBookmark();
+
+    // switchig dev view
+    if(dev_view) {
+        QWebEngineView *webView = qobject_cast<QWebEngineView *>(tabWidget->currentWidget());
+        webView->page()->setDevToolsPage(dev_view->page());
+    }
 }
