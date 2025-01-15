@@ -298,6 +298,22 @@ int DBController::addNote(QString title, QString content, int group_id = 1) {
    return -1;
 }
 
+// updating  note by id
+void DBController::updateNote(int id, QString title, QString content) {
+   auto note = storage.get<Note>(id);
+
+   try {
+      note.title = title.toStdString();
+      note.content = content.toStdString();
+
+      storage.update(note);
+   } catch (std::system_error e) {
+      std::cout << e.what() << std::endl;  
+   } catch (...){
+      std::cout << "unknown exeption in updateNote" << std::endl;
+   }
+}
+
 // remove note by id
 void DBController::removeNote(int id) {
    try {  

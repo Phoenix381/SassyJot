@@ -50,11 +50,32 @@ QString AppWindow::getLinks() {
 
 // add new note
 void AppWindow::addNote(QString title, QString content, int group_id) {
+    // TODO group_id
+
     // adding note
     auto id = db->addNote(title, content, group_id);
 
     // check for links and create if needed
     // links are #(\d+) , selecting capture groups (1 is first group, 0 is whole match)
+    QRegularExpression link_regex("#(\\d+)");
+    auto links = link_regex.globalMatch(content);
+
+    while (links.hasNext()) {
+        auto link = links.next();   
+        auto link_id = link.captured(1).toInt();
+        db->addNoteLink(id, link_id);
+    }
+}
+
+// updating note
+void AppWindow::updateNote(int id, QString title, QString content, int group_id) {
+    // TODO group_id
+    
+    db->updateNote(id, title, content);
+
+    // reset links for this note
+    db->removeAllNoteLinks(id);
+
     QRegularExpression link_regex("#(\\d+)");
     auto links = link_regex.globalMatch(content);
 

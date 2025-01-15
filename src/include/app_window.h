@@ -111,6 +111,7 @@ public slots:
     QString getNodes();
     QString getLinks();
     void addNote(QString title, QString content, int group_id = 1);
+    void updateNote(int id, QString title, QString content, int group_id = 1);
 
 private slots:
     void loadPage();

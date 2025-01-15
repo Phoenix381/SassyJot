@@ -73,6 +73,26 @@ button > img {
     flex-grow: 1;
 }
 
+#edit-dialog {
+    display: flex;
+    flex-direction: column;
+
+    gap: 1em;
+}
+
+#edit-dialog > textarea {
+    flex-grow: 1;
+
+    padding: 5px;
+    resize: none;
+}
+
+#edit-dialog > div > input[type="text"] {
+    padding: 5px;
+
+    flex-grow: 1;
+}
+
 .selected {
     stroke: var(--accent-color);
     stroke-width: 2;

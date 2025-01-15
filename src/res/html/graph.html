@@ -45,7 +45,7 @@
                 <button id="search-button" class="btn accent bordered">
                     <img src="img/search.png" />
                 </button>
-                <button id="edit-button" class="btn accent bordered">
+                <button id="edit-button" class="btn accent bordered" data-bs-toggle="modal" data-bs-target="#editModal" disabled>
                     <img src="img/edit.png" />
                 </button>
                 <button id="new-button" class="btn accent bordered" data-bs-toggle="modal" data-bs-target="#addModal">
@@ -54,7 +54,7 @@
             </div>
 
             <div id="note-content">
-                note content
+                Note not selected
             </div>
         </div>
     </div>
@@ -70,6 +70,11 @@
 
                     <div class="d-flex justify-content-between gap-2">
                         <input class="accent" id="new-title" type="text" placeholder="Title" />
+
+                        <button class="btn accent bordered" data-bs-dismiss="modal">
+                            <img src="img/close.png" />
+                        </button>
+
                         <button id="add-note-button" class="btn accent bordered">
                             <img src="img/add.png" />
                         </button>
@@ -78,6 +83,36 @@
                     <div id="new-group">TODO group</div>
 
                     <textarea class="accent" id="new-content" placeholder="Content"></textarea>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================================== -->
+    <!-- edit note modal -->
+    <!-- ======================================================================== -->
+
+    <div class="modal fade" id="editModal" tabindex="-1">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content d-flex align-items-center justify-content-center">
+                <div id="edit-dialog" class="py-4 justify-center w-75 h-100">
+
+                    <div class="d-flex justify-content-between gap-2">
+                        <input class="accent" id="old-title" type="text" placeholder="Title" />
+
+                        <button class="btn accent bordered" data-bs-dismiss="modal">
+                            <img src="img/close.png" />
+                        </button>
+
+                        <button id="edit-note-button" class="btn accent bordered">
+                            <img src="img/check.png" />
+                        </button>
+                    </div>
+
+                    <div id="edit-group">TODO group</div>
+
+                    <textarea class="accent" id="old-content" placeholder="Content"></textarea>
 
                 </div>
             </div>

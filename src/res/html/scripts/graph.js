@@ -16,6 +16,9 @@ var db;
 let nodes_input = [];
 let links_input = [];
 
+// currently selected node
+let selected_node = null;
+
 channel = new QWebChannel(qt.webChannelTransport, function(channel) {
     console.log("QWebChannel created for graph");
     console.log("Available objects:", channel.objects);
@@ -170,6 +173,9 @@ function drawGraph() {
     node.on("click", click);
 
     function click(event, d) {
+        // enabling edit button
+        document.getElementById("edit-button").disabled = false;
+
         // init markdownit
         const md = window.markdownit({
             breaks: true // Enable line breaks
@@ -193,6 +199,11 @@ function drawGraph() {
         simulation.alpha(1).restart();
         // delete d.fx;
         // delete d.fy;
+
+        // loading data to edit modal
+        old_title.value = d.title;
+        old_content.value = d.content;
+        selected_node = d.id;
     }
 
     // When this cell is re-run, stop the previous simulation. (This doesn’t
@@ -202,6 +213,8 @@ function drawGraph() {
 }
 
 // updatin on windodw resize
+let container = document.getElementById("graph-container");
+
 window.addEventListener('resize', function() {
     width = container.offsetWidth;
     height = container.offsetHeight;
@@ -213,7 +226,7 @@ window.addEventListener('resize', function() {
 // modal logic
 // ============================================================================
 
-const modal = new bootstrap.Modal(document.getElementById('addModal'));
+const addModal = new bootstrap.Modal(document.getElementById('addModal'));
 const addNoteBtn = document.getElementById('add-note-button');
 
 const title = document.getElementById('new-title');
@@ -229,4 +242,22 @@ addNoteBtn.addEventListener('click', function() {
     // adding new note
     // TODO add group
     handler.addNote(title.value, content.value);
+});
+
+const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+const editNoteBtn = document.getElementById('edit-note-button');
+
+const old_title = document.getElementById('old-title');
+const old_content = document.getElementById('old-content');
+
+editNoteBtn.addEventListener('click', function() {
+    // check if title is not empty
+    if(old_title.value == "") {
+        old_title.focus();
+        return;
+    }
+
+    // updating note
+    // TODO update group
+    handler.updateNote(selected_node, old_title.value, old_content.value);
 });

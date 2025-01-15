@@ -169,6 +169,7 @@ public slots:
 
     // notes
     int addNote(QString, QString, int);
+    void updateNote(int, QString, QString);
     void removeNote(int);
     std::vector<Note> getCurrentWorkspaceNotes();
 
