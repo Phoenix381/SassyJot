@@ -261,3 +261,125 @@ editNoteBtn.addEventListener('click', function() {
     // TODO update group
     handler.updateNote(selected_node, old_title.value, old_content.value);
 });
+
+// ============================================================================
+// textarea logic
+// ============================================================================
+
+// search notes by title in nodes_input
+function searchNotes(text) {
+    let results = [];
+
+    for (let i = 0; i < nodes_input.length; i++) {
+        if (nodes_input[i].title.toLowerCase().includes(text.toLowerCase())) {   
+            results.push(nodes_input[i]);
+        }
+    }
+
+    return results;
+}
+
+// draw results selection element
+function drawResults(results, element) {
+    // get cursor coordinates
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+    const rect = range.getBoundingClientRect();
+
+    if (rect) {
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + rect.height / 2;
+
+        // removing if exists
+        let prevElement = document.getElementById('search-selection');
+        if (prevElement) {
+            prevElement.remove();
+        }
+
+        // creating result container
+        const resultsContainer = document.createElement('div');
+        resultsContainer.classList.add('search-selection');
+        resultsContainer.id = 'search-selection';
+        resultsContainer.style.position = 'absolute';
+        resultsContainer.style.zIndex = 9999;
+
+        // fill it with results
+        // const resultsContainer = document.createElement('ul');
+
+        for (let result of results) {
+            const resultElement = document.createElement('div');
+            resultElement.textContent = result.title;
+            resultsContainer.appendChild(resultElement);
+        }
+
+        // show results
+        resultsContainer.style.top = y + 'px';
+        resultsContainer.style.left = x + 'px';
+        // resultElement.appendChild(resultsContainer);
+        document.body.appendChild(resultsContainer);
+    }
+}
+
+// textareas input in modals
+const textareas = document.getElementsByClassName('textarea');
+let searching = false;
+
+for (let i = 0; i < textareas.length; i++) {
+    textareas[i].addEventListener('input', function() {
+        // detect link start with [[
+        // const noteLinkRegex = /\[\[(.*?)\]\]/g;
+        // const noteLinkStart = /\[\[/g;
+
+        // starting search
+        if (textareas[i].textContent.endsWith('[[')) {
+            searching = true;
+        }
+
+        // show search result element
+        if (searching) {
+            // select text after [[ in textarea
+            let start = textareas[i].textContent.lastIndexOf('[[') + 2;
+            let text = textareas[i].textContent.substring(start);
+
+            const results = searchNotes(text);
+            drawResults(results, textareas[i]);
+        }
+
+    });
+
+    textareas[i].addEventListener('keydown', function(e) {
+        if (event.key === 'Backspace') {
+            // removing search result element
+            if (textareas[i].textContent.endsWith('[[')) {
+                searching = false;
+                let prevElement = document.getElementById('search-selection');
+                if (prevElement) {
+                    prevElement.remove();
+                }
+            }
+
+            // check if removing character of link
+
+
+            console.log('Backspace pressed');
+            // event.preventDefault(); // Prevent the default backspace behavior if needed
+        }
+    });
+
+    textareas[i].addEventListener('paste', function(e) {
+        event.preventDefault();
+
+        // check if pasting link
+        const pastedContent = (event.clipboardData || window.clipboardData).getData('text');
+        const linkRegex = /https?:\/\/\S+/gi;
+
+        if (linkRegex.test(pastedContent)) {
+            // insert as <a>
+            document.execCommand('insertHTML', false, `<a href="${pastedContent}">${pastedContent}</a>`);
+        }
+        else
+            document.execCommand('insertText', false, pastedContent);
+
+        // TODO process images etc
+    });
+}

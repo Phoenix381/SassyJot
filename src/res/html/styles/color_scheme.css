@@ -6,6 +6,7 @@
 body {
     --bg-color: #111;
     --secondary-color: #333;
+    --lighter-color: #444;
     
     --text-color: #aaa;
     --secondary-text-color: #888;
@@ -85,6 +86,22 @@ textarea.accent {
 }
 
 textarea.accent:focus {
+    background-color: #111;
+    color: var(--accent-color);
+    outline: none;
+
+    border: 2px solid var(--accent-color) !important;
+}
+
+.accent.textarea {
+    background-color: var(--secondary-color) !important;
+    color: var(--accent-color);
+
+    border: 2px solid var(--secondary-color) !important;
+    border-radius: 10px;
+}
+
+.accent.textarea:focus {
     background-color: #111;
     color: var(--accent-color);
     outline: none;

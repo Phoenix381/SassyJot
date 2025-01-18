@@ -60,11 +60,36 @@ button > img {
     gap: 1em;
 }
 
-#add-dialog > textarea {
+/*#add-dialog > textarea {*/
+.textarea {
     flex-grow: 1;
 
     padding: 5px;
     resize: none;
+
+    overflow: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.textarea a {
+    color: blue;
+    text-decoration: underline;
+}
+
+.search-selection {
+    background-color: var(--lighter-color);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+}
+
+.search-selection > div {
+    padding: 3px 6px 3px 6px;
+}
+
+.search-selection > div:hover {
+    background-color: var(--secondary-text-color);
+    border-radius: 10px;
 }
 
 #add-dialog > div > input[type="text"] {
