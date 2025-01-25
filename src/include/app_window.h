@@ -1,3 +1,4 @@
+
 #ifndef APPWINDOW_H
 #define APPWINDOW_H
 
@@ -32,6 +33,11 @@
 #include <QJsonDocument>
 
 #include "db_api.h"
+#include "controllers.h"
+
+// forward declaration
+class WindowController;
+class TabController;
 
 // =============================================================================
 // main app window
@@ -42,22 +48,14 @@ public:
     AppWindow();
 
 private:
-    // window controls
+    // main gui elements
     QWebEngineView *webControls;
-    // optional debug
     QWebEngineView *dev_view;
-    // main page
     QTabWidget *tabWidget;
 
-    // tabs
-    std::vector<QWebEngineView *> tabs;
-    int currentTab = 0;
-
-    // dragging window
-    bool dragging = false;
-    bool maximized = false;
-    QPoint localPos;
-    QSize lastSize;
+    // controllers
+    WindowController *windowController;
+    TabController *tabController;
 
     DBController *db;
 
@@ -71,37 +69,13 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
 
 public slots:
-    void requestNewTab();
-    void closeCurrentTab();
-    void closeAllTabs();
-    void loadWorkspaceTabs(int workspaceId);
-    void nextTab();
-    void prevTab();
+    // focusing controls by pressing esc
+    // TODO move to controller
+    void focus();
 
     // handling bookmarks
     void favDialog();
     void favClick();
-
-    // focusing controls by pressing esc
-    void focus();
-
-    // window controls
-    void closeWindow();
-    void toggleMaximize();
-    void minimizeWindow();
-
-    void startMove();
-
-    // navigation
-    void pageBack();
-    void pageForward();
-    void pageReload();
-    void pageChangeUrl(QString url);
-
-    // tabs
-    void createTab(QString url);
-    void changeTab(int index);
-    void closeTab(int index, int newIndex);
 
     // db api
     void removeBookmark();
@@ -114,10 +88,7 @@ public slots:
     void updateNote(int id, QString title, QString content, int group_id = 1);
 
 private slots:
-    void loadPage();
-    void reloadPage();
     void showContextMenu(const QPoint &pos);
-    void createNewTab();
 };
 
 #endif // APP_WINDOW_H

@@ -83,9 +83,19 @@ AppWindow::AppWindow() {
     // setting up web controls for window
     QWebChannel *channel = new QWebChannel(webControls);
     channel->registerObject(QStringLiteral("app"), this);
-    channel->registerObject(QStringLiteral("db"), db);
+    channel->registerObject(QStringLiteral("db"), db); // !!! ---
     webControls->page()->setWebChannel(channel);
 
+    // creating controllers
+    windowController = new WindowController(this, db);
+    tabController = new TabController(this, tabWidget, webControls, dev_view, db);
+
+    // registering controllers
+    channel->registerObject(QStringLiteral("windowController"), windowController);
+    channel->registerObject(QStringLiteral("tabController"), tabController);
+
+
+    // init stuff
     registerEvents();
     registerHotkeys();
 
@@ -104,11 +114,11 @@ AppWindow::AppWindow() {
             auto workspace_id = db->getSetting("workspace");
             
             // loading workspace tabs
-            loadWorkspaceTabs(workspace_id.toInt());
+            tabController->loadWorkspaceTabs(workspace_id.toInt());
 
-            // check if any tabs open
-            if (tabWidget->count() == 0)
-                this->webControls->page()->runJavaScript("newTabElement.click();");
+            // // check if any tabs open
+            // if (tabWidget->count() == 0)
+            //     this->webControls->page()->runJavaScript("newTabElement.click();");
             
             // setting workspace color
             auto color = db->getCurrentWorkspaceColor().toStdString();
@@ -120,4 +130,67 @@ AppWindow::AppWindow() {
             this->webControls->page()->runJavaScript(func);
         }
     );
+}
+
+// =============================================================================
+// redefining mouse bahavior
+// =============================================================================
+
+// dragging window with mouse
+void AppWindow::mouseMoveEvent(QMouseEvent *event) {
+    if (windowController->dragging) {   
+        QPoint globalPos = event->globalPosition().toPoint();
+        window()->move(globalPos.x() - windowController->localPos.x(), globalPos.y() - windowController->localPos.y());
+
+        // Find the screen where the cursor is located
+        QScreen *screen = QGuiApplication::screenAt(globalPos);
+        if (screen) {
+            QRect screenGeometry = screen->geometry();
+
+            if (!this->isMaximized() && globalPos.y() <= screenGeometry.top()) {
+                windowController->maximized = true;
+                this->showMaximized(); 
+            } else if (globalPos.y() > screenGeometry.top()) {
+                if(windowController->maximized) {
+                    windowController->maximized = false;
+                    this->showNormal();
+                    this->resize(windowController->lastSize);
+                }
+            }
+        }
+    }
+}
+
+// handling lmb release
+void AppWindow::mouseReleaseEvent(QMouseEvent *event) {
+    if (windowController->dragging && event->button() == Qt::LeftButton) {
+        windowController->dragging = false;
+        windowController->stopMove();
+    }
+}
+
+// =============================================================================
+// context menu
+// =============================================================================
+
+void AppWindow::showContextMenu(const QPoint &pos) {
+    QMenu contextMenu;
+    QAction *newTabAction = contextMenu.addAction("New Tab");
+    connect(newTabAction, &QAction::triggered, tabController, &TabController::requestEmptyTab);
+
+    contextMenu.exec(mapToGlobal(pos));
+}
+
+// =============================================================================
+// hotkey actions
+// =============================================================================
+
+// address bar focus
+// TODO pass webcontrols to controller
+void AppWindow::focus() {
+    if(! webControls->hasFocus()) {
+        webControls->setFocus();
+        // TODO more complex focus
+    }
+    webControls->page()->runJavaScript("gotFocus();");
 }

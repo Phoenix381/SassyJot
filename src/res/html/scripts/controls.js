@@ -5,6 +5,8 @@
 
 var handler;
 var db;
+var windowController;
+var tabController;
 
 // async channel creation
 channel = new QWebChannel(qt.webChannelTransport, function(channel) {
@@ -13,6 +15,9 @@ channel = new QWebChannel(qt.webChannelTransport, function(channel) {
 
     handler = channel.objects.app;
     db = channel.objects.db;
+
+    windowController = channel.objects.windowController;
+    tabController = channel.objects.tabController;
 
     // setting callbacks here
     windowControls();
@@ -51,34 +56,39 @@ function updateTabURL(url) {
         addressInputElement.value = url;
 }
 
-// next tab
-function nextTab() {
-    let currentTab = tabList.findIndex(function(el) {
-        return el.classList.contains('selected');
-    });
+// // next tab
+// function nextTab() {
+//     let currentTab = tabList.findIndex(function(el) {
+//         return el.classList.contains('selected');
+//     });
 
-    tabList[currentTab].classList.remove('selected');
+//     tabList[currentTab].classList.remove('selected');
     
-    if(currentTab < tabList.length - 1) {
-        tabList[currentTab + 1].classList.add('selected');
-    } else {
-        tabList[0].classList.add('selected');
-    }
-}
+//     if(currentTab < tabList.length - 1) {
+//         tabList[currentTab + 1].classList.add('selected');
+//     } else {
+//         tabList[0].classList.add('selected');
+//     }
+// }
 
-// previous tab
-function prevTab() {
-    let currentTab = tabList.findIndex(function(el) {
-        return el.classList.contains('selected');
-    });
+// // previous tab
+// function prevTab() {
+//     let currentTab = tabList.findIndex(function(el) {
+//         return el.classList.contains('selected');
+//     });
 
-    tabList[currentTab].classList.remove('selected');
+//     tabList[currentTab].classList.remove('selected');
     
-    if(currentTab > 0) {
-        tabList[currentTab - 1].classList.add('selected');
-    } else {
-        tabList[tabList.length - 1].classList.add('selected');
-    }
+//     if(currentTab > 0) {
+//         tabList[currentTab - 1].classList.add('selected');
+//     } else {
+//         tabList[tabList.length - 1].classList.add('selected');
+//     }
+// }
+
+// selecting tab by index
+function selectTab(index) {
+    tabList[index].click();
 }
 
 tabListElement.addEventListener('wheel', (event) => {
@@ -94,7 +104,7 @@ const addressFormElement = document.getElementById('adress-form');
 
 function adressBarCallback() {
     addressFormElement.addEventListener('submit', function(event) {
-        handler.pageChangeUrl(addressInputElement.value);
+        tabController.pageChangeUrl(addressInputElement.value);
 
         addressInputElement.blur();
         event.preventDefault();
@@ -107,10 +117,10 @@ function adressBarCallback() {
 
 const newTabElement = document.getElementById('newTabButton');
 
-function newTab(inside=true) {
+function newTab(url) {
     // qt creates new tab
-    if(inside)
-        handler.createTab('');
+    // if(url)
+        tabController.createTab(url);
 
     // creating tab element inside gui
     tab = document.createElement('div');
@@ -149,7 +159,7 @@ function newTab(inside=true) {
         tabList[i].classList.add('selected'); 
 
         // handling swithing in qt
-        handler.changeTab(i);
+        tabController.selectTab(i);
 
         // check if bookmark after switching to it
         handler.checkBookmark();
@@ -161,20 +171,28 @@ function newTab(inside=true) {
             return;
         }
 
-        tab = tabList[index];
-        tabList.splice(index, 1);
+        let i = tabList.indexOf(this);
+        newIndex = i == tabList.length - 1 ? i - 1 : i;
+
+        tab = tabList[i];
+        tabList.splice(i, 1);
 
         tab.remove();
 
-        newIndex = index ? index - 1 : 0;
+
+        tabList.forEach(function(el) {
+            el.classList.remove('selected'); 
+        });
         tabList[newIndex].classList.add('selected'); 
 
         // removing in qt
-        handler.closeTab(index, newIndex);
+        tabController.closeTab(i);
     });
 
     // switching to created tab
     tab.click();
+
+    addressInputElement.focus();
 
     // update tabs width
     // TODO
@@ -405,39 +423,39 @@ container.addEventListener('wheel', (event) => {
 function windowControls() {
     // top close
     document.getElementById('closeButton').addEventListener('click', function() {
-        handler.closeWindow();
+        windowController.closeWindow();
     });
 
     // top maximize
     document.getElementById('maximizeButton').addEventListener('click', function() {
-        handler.toggleMaximize();
+        windowController.toggleMaximize();
     });
 
     // top minimize
     document.getElementById('minimizeButton').addEventListener('click', function() {
-        handler.minimizeWindow();
+        windowController.minimizeWindow();
     });
 
     // page back
     document.getElementById('backButton').addEventListener('click', function() {
-        handler.pageBack();
+        tabController.pageBack();
     });
 
     // page forward
     document.getElementById('forwardButton').addEventListener('click', function() {
-        handler.pageForward();
+        tabController.pageForward();
     });
 
     // page refresh
     document.getElementById('refreshButton').addEventListener('click', function() {
-        handler.pageReload();
+        tabController.pageReload();
     });
 
     // drag window (passing event to qt)
     const dragElement = document.getElementById('space');
 
     dragElement.addEventListener('mousedown', function() {
-        handler.startMove();
+        windowController.startMove();
     });
 }
 
